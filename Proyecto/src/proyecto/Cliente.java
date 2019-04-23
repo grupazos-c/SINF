@@ -1,7 +1,6 @@
 package proyecto;
 
 import java.sql.*;
-import java.util.Scanner;
 
 public class Cliente {
 
@@ -20,8 +19,14 @@ public class Cliente {
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
-	void init() throws SQLException, ClassNotFoundException {
-		Class.forName(JDBC_DRIVER);
+	void init() throws SQLException {
+		
+		try {
+			Class.forName(JDBC_DRIVER);
+		} catch (ClassNotFoundException e) {
+			System.out.println("Error al inizializar el driver");
+			e.printStackTrace();
+		}
 
 		System.out.println("Connecting to database...");
 		conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
