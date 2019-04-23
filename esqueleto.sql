@@ -98,7 +98,7 @@ CREATE TABLE Reservas_Prereservas
   id_espectaculo INT NOT NULL,
   fecha DATETIME NOT NULL,
 
-  dni VARCHAR(8) NOT NULL,
+  dni VARCHAR(9) NOT NULL,
   sello_temporal TIMESTAMP DEFAULT NOW(),
   tipo_usuario VARCHAR(15) NOT NULL,
   PRIMARY KEY (id_localidad, id_grada, id_recinto, id_espectaculo, fecha, dni),

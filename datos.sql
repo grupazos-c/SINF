@@ -103,3 +103,10 @@ INSERT INTO Localidades VALUES (2, 3, 3, 3, '18-05-12 16:00:00', 'libre');
 INSERT INTO Localidades VALUES (3, 3, 3, 3, '18-05-12 16:00:00', 'pre-reservado');
 INSERT INTO Localidades VALUES (4, 3, 3, 3, '18-05-12 16:00:00', 'deteriorado');
 INSERT INTO Localidades VALUES (5, 3, 3, 3, '18-05-12 16:00:00', 'libre');
+
+INSERT INTO Reservas_Prereservas VALUES (1, 1, 1, 1, '16-05-12 16:00:00', '32654125D', NULL, 'Adulto'); #Deberíamos poner un tipo de usuario y un TIMESTAMP, pero ahora no me da la cabeza
+INSERT INTO Reservas_Prereservas VALUES (3, 1, 1, 1, '16-05-12 16:00:00', '32654125D', NULL, 'Infantil');
+INSERT INTO Reservas_Prereservas VALUES (1, 2, 2, 2, '17-05-10 18:00:00', '45213658R', NULL, "Infantil");
+INSERT INTO Reservas_Prereservas VALUES (3, 2, 2, 2, '17-05-10 18:00:00', '45213658R', NULL, "Infantil");
+INSERT INTO Reservas_Prereservas VALUES (1, 3, 3, 3, '18-05-12 16:00:00', '78941235E', NULL, "Parado");
+INSERT INTO Reservas_Prereservas VALUES (3, 3, 3, 3, '18-05-12 16:00:00', '48210368I', NULL, "Jubilado");
