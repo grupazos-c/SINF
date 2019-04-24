@@ -12,13 +12,13 @@ SET @estado = null;
 SET @max_tipo = 0;
 SET @actuales_tipo = 0;
 SET @actuales_evento = 0;
+SET @comprobacion = null;
 
 SELECT estado_localidad INTO @estado FROM Localidades WHERE Localidades.id_localidad = id_localidad AND Localidades.id_grada = id_grada AND Localidades.id_recinto = id_recinto AND Localidades.id_espectaculo= id_espectaculo AND Localidades.fecha= fecha;
-select @estado;
+SELECT dni INTO @comprobacion FROM Reservas_Prereservas WHERE Reservas_Prereservas.id_localidad=id_localidad AND Reservas_Prereservas.id_grada=id_grada AND Reservas_Prereservas.id_recinto=id_recinto AND Reservas_Prereservas.id_espectaculo=id_espectaculo AND Reservas_Prereservas.fecha=fecha;
 
 IF @estado = 'libre' /*la localidad está libre*/
-THEN
-
+  THEN
     /*UNA VEZ COMPROBAMOS QUE LA LOCALIDAD ESTÁ LIBRE COMPROBAMOS SI SE ADMITEN USUARIOS DEL tipo_usuario*/
     IF tipo_usuario = 'jubilado'
       THEN SELECT maximo_jubilado INTO @max_tipo FROM Gradas WHERE Gradas.id_grada = id_grada AND Gradas.id_recinto= id_recinto AND Gradas.id_espectaculo= id_espectaculo AND Gradas.fecha= fecha;
@@ -63,6 +63,17 @@ THEN
 
     SET id_transaccion=1;
     LEAVE reservar;
+
+
+ELSEIF @estado='pre-reservado' AND @comprobacion = dni
+  THEN
+    /*Actualizamos el estado de la localidad de pre-reservado a reservado*/
+    UPDATE Localidades SET estado_localidad = 'reservado' WHERE Localidades.id_localidad= id_localidad AND Localidades.id_grada= id_grada AND Localidades.id_recinto= id_recinto AND Localidades.id_espectaculo= id_espectaculo AND Localidades.fecha= fecha;
+
+
+    SET id_transaccion=1;
+    LEAVE reservar;
+
 
 ELSE /*El id_reserva=-1 significa localidad no está libre*/
     SET id_transaccion = -1;
