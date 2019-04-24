@@ -1,7 +1,7 @@
 drop PROCEDURE if exists filtrarEventos;
 delimiter //
 create procedure filtrarEventos(
-	IN filtro_espectaculo int,
+    IN filtro_espectaculo int,
     IN filtro_recinto int,
     IN filtro_fecha_min varchar(19),
     IN filtro_fecha_max varchar(19),
@@ -29,12 +29,12 @@ BEGIN
     end if;
     
 	if filtro_fecha_min is not null then
-		insert into aux select * from resultado where resultado.fecha > filtro_fecha_min;
+		insert into aux select * from resultado where resultado.fecha >= filtro_fecha_min;
 		truncate resultado; insert into resultado select * from aux; truncate aux;
     end if;
     
 	if filtro_fecha_max is not null then
-		insert into aux select * from resultado where resultado.fecha < filtro_fecha_max;
+		insert into aux select * from resultado where resultado.fecha <= filtro_fecha_max;
 		truncate resultado; insert into resultado select * from aux; truncate aux;
     end if;
     
