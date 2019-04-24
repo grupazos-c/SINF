@@ -16,7 +16,8 @@ CREATE TABLE Participantes
 (
   participante VARCHAR(25) NOT NULL,
   id_espectaculo INT NOT NULL,
-  FOREIGN KEY (id_espectaculo) REFERENCES Espectaculos(id_espectaculo),
+  FOREIGN KEY (id_espectaculo) REFERENCES Espectaculos(id_espectaculo)
+  ON DELETE CASCADE,
   PRIMARY KEY (participante, id_espectaculo)
 );
 
@@ -42,8 +43,8 @@ CREATE TABLE Eventos
   T3 INT NOT NULL,
   penalizacion_anulacion INT NOT NULL,
   PRIMARY KEY (id_espectaculo, id_recinto, fecha),
-  FOREIGN KEY (id_espectaculo) REFERENCES Espectaculos(id_espectaculo),
-  FOREIGN KEY (id_recinto) REFERENCES Recintos(id_recinto)
+  FOREIGN KEY (id_espectaculo) REFERENCES Espectaculos(id_espectaculo) ON DELETE CASCADE,
+  FOREIGN KEY (id_recinto) REFERENCES Recintos(id_recinto) ON DELETE CASCADE
 );
 
 CREATE TABLE Clientes
@@ -75,7 +76,10 @@ CREATE TABLE Gradas
   maximo_parado INT NOT NULL,
   maximo_bebe INT NOT NULL,
   PRIMARY KEY (id_grada, id_recinto, id_espectaculo, fecha),
-  FOREIGN KEY (id_recinto, id_espectaculo, fecha) REFERENCES Eventos(id_espectaculo, id_recinto, fecha)
+  FOREIGN KEY (id_recinto, id_espectaculo, fecha)
+  REFERENCES Eventos(id_espectaculo, id_recinto, fecha)
+  ON DELETE CASCADE
+
 );
 
 CREATE TABLE Localidades
@@ -87,7 +91,9 @@ CREATE TABLE Localidades
   fecha DATETIME NOT NULL,
   estado_localidad VARCHAR(15) NOT NULL,
   PRIMARY KEY (id_localidad, id_grada, id_recinto, id_espectaculo, fecha),
-  FOREIGN KEY (id_grada, id_recinto, id_espectaculo, fecha) REFERENCES Gradas(id_grada, id_recinto, id_espectaculo, fecha)
+  FOREIGN KEY (id_grada, id_recinto, id_espectaculo, fecha)
+  REFERENCES Gradas(id_grada, id_recinto, id_espectaculo, fecha)
+  ON DELETE CASCADE
 );
 
 CREATE TABLE Reservas_Prereservas
@@ -101,7 +107,9 @@ CREATE TABLE Reservas_Prereservas
   dni VARCHAR(9) NOT NULL,
   sello_temporal TIMESTAMP DEFAULT NOW(),
   tipo_usuario VARCHAR(15) NOT NULL,
-  PRIMARY KEY (id_localidad, id_grada, id_recinto, id_espectaculo, fecha, dni),
-  FOREIGN KEY (dni) REFERENCES Clientes(dni),
-  FOREIGN KEY (id_localidad, id_grada, id_recinto, id_espectaculo, fecha) REFERENCES Localidades(id_localidad, id_grada, id_recinto, id_espectaculo, fecha)
+  PRIMARY KEY (id_localidad, id_grada, id_recinto, id_espectaculo, fecha),
+  FOREIGN KEY (dni) REFERENCES Clientes(dni) ON DELETE CASCADE,
+  FOREIGN KEY (id_localidad, id_grada, id_recinto, id_espectaculo, fecha)
+  REFERENCES Localidades(id_localidad, id_grada, id_recinto, id_espectaculo, fecha)
+  ON DELETE CASCADE
 );
