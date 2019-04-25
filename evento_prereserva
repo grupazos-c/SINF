@@ -1,0 +1,52 @@
+DELIMITER //
+
+DROP EVENT IF EXISTS evento_prereserva;
+
+CREATE EVENT evento_prereserva
+ON SCHEDULE EVERY 1 MINUTE STARTS '1999-09-09 00:00:00'
+DO
+BEGIN
+
+DECLARE id_localidad_AUX INT DEFAULT 0;
+DECLARE id_grada_AUX INT DEFAULT 0;
+DECLARE id_recinto_AUX INT DEFAULT 0;
+DECLARE id_espectaculo_AUX INT DEFAULT 0;
+DECLARE fecha_AUX DATETIME DEFAULT '1999-09-09 00:00:00';
+DECLARE fecha_finalizacion_AUX DATETIME DEFAULT '1999-09-09 00:00:00';
+DECLARE sello_temporal_AUX DATETIME DEFAULT '1999-09-09 00:00:00';
+DECLARE T1_AUX INT DEFAULT 0;
+
+  DECLARE cursorPrereservas CURSOR FOR SELECT id_localidad, id_grada, id_recinto, id_espectaculo, fecha, sello_temporal FROM Reservas_Prereservas;
+
+  OPEN cursorPrereservas;
+  BEGIN
+      DECLARE consultaTerminada boolean DEFAULT FALSE;
+      DECLARE CONTINUE HANDLER FOR NOT FOUND SET consultaTerminada = TRUE;
+
+      buclePrereservas: LOOP
+          FETCH cursorPrereservas INTO id_localidad_AUX, id_grada_AUX, id_recinto_AUX, id_espectaculo_AUX, fecha_AUX, sello_temporal_AUX;
+
+          IF consultaTerminada THEN
+              LEAVE buclePrereservas;
+              SELECT * FROM Eventos;
+          ELSE /*Procedemos a comprobar si se ha superado el T1*/
+
+            SELECT T1, fecha_finalizacion INTO T1_AUX, fecha_finalizacion_AUX FROM Eventos WHERE id_localidad=id_localidad_AUX AND id_grada=id_grada_AUX AND id_recinto=id_recinto_AUX AND id_espectaculo=id_espectaculo_AUX AND fecha=fecha_AUX;
+            SELECT ADDTIME(sello_temporal_AUX,T1_AUX);
+
+            SELECT sello_temporal_AUX;
+
+            IF sello_temporal_AUX > fecha_finalizacion_AUX
+            THEN /*si se ha pasado el tiempo máximo de pre-reserva pongo localidad a libre y borro de la tabla de Reservas_Prereservas*/
+              UPDATE Localidades SET estado_localidad='libre' WHERE id_localidad=id_localidad_AUX AND id_grada=id_grada_AUX AND id_recinto=id_recinto_AUX AND id_espectaculo=id_espectaculo_AUX AND fecha=fecha_AUX;
+              DELETE FROM Reservas_Prereservas WHERE id_localidad=id_localidad_AUX AND id_grada=id_grada_AUX AND id_recinto=id_recinto_AUX AND id_espectaculo=id_espectaculo_AUX AND fecha=fecha_AUX;
+            END IF;
+
+          END IF;
+      END LOOP buclePrereservas;
+  END;
+  CLOSE cursorPrereservas;
+
+END //
+
+DELIMITER ;
