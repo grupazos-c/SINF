@@ -101,7 +101,7 @@ CREATE TABLE Reservas_Prereservas
   dni VARCHAR(9) NOT NULL,
   sello_temporal TIMESTAMP DEFAULT NOW(),
   tipo_usuario VARCHAR(15) NOT NULL,
-  PRIMARY KEY (id_localidad, id_grada, id_recinto, id_espectaculo, fecha, dni),
+  PRIMARY KEY (id_localidad, id_grada, id_recinto, id_espectaculo, fecha),
   FOREIGN KEY (dni) REFERENCES Clientes(dni),
   FOREIGN KEY (id_localidad, id_grada, id_recinto, id_espectaculo, fecha) REFERENCES Localidades(id_localidad, id_grada, id_recinto, id_espectaculo, fecha)
 );
