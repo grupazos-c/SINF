@@ -1,8 +1,7 @@
-delimiter //
-
 DROP PROCEDURE IF EXISTS muestraGradas;
 
-CREATE PROCEDURE muestraGradas(IN espectaculo int, IN recinto int, IN fecha varchar(10), IN grada)
+delimiter //
+CREATE PROCEDURE muestraGradas(IN espectaculo int, IN recinto int, IN fecha datetime, IN grada int)
 BEGIN
 
 	DECLARE localidades_disponibles int;
@@ -23,6 +22,7 @@ BEGIN
 			and gradas.id_grada = grada
 			and localidades.estado_localidad = 'libre'
 		GROUP BY gradas.id_grada;
+	if localidades_disponibles is null then set localidades_disponibles = 0;
 		
 	select count(*) into localidades_ocupadas_por_usuario_jubilado from reservas_prereservas, gradas 
 		where reservas_prereservas.id_espectaculo = gradas.id_espectaculo 
@@ -31,7 +31,8 @@ BEGIN
 			and reservas_prereservas.id_grada = gradas.id_grada
 			and gradas.id_grada = grada
 			and reservas_prereservas.tipo_usuario = 'jubilado'
-		GROUP BY gradas.id_grada, reservas_prereservas.tipo_usuario
+		GROUP BY gradas.id_grada, reservas_prereservas.tipo_usuario;
+	if localidades_ocupadas_por_usuario_jubilado is null then set localidades_ocupadas_por_usuario_jubilado = 0;
 		
 	select count(*) into localidades_ocupadas_por_usuario_adulto from reservas_prereservas, gradas 
 		where reservas_prereservas.id_espectaculo = gradas.id_espectaculo 
@@ -40,16 +41,18 @@ BEGIN
 			and reservas_prereservas.id_grada = gradas.id_grada
 			and gradas.id_grada = grada
 			and reservas_prereservas.tipo_usuario = 'adulto'
-		GROUP BY gradas.id_grada, reservas_prereservas.tipo_usuario
+		GROUP BY gradas.id_grada, reservas_prereservas.tipo_usuario;
+	if localidades_ocupadas_por_usuario_adulto is null then set localidades_ocupadas_por_usuario_adulto = 0;
 		
-	select count(*) into localidades_ocupadas_por_usuario_adulto from reservas_prereservas, gradas 
+	select count(*) into localidades_ocupadas_por_usuario_parado from reservas_prereservas, gradas 
 		where reservas_prereservas.id_espectaculo = gradas.id_espectaculo 
 			and reservas_prereservas.id_recinto = gradas.id_recinto
 			and reservas_prereservas.fecha = gradas.fecha
 			and reservas_prereservas.id_grada = gradas.id_grada
 			and gradas.id_grada = grada
 			and reservas_prereservas.tipo_usuario = 'adulto'
-		GROUP BY gradas.id_grada, reservas_prereservas.tipo_usuario
+		GROUP BY gradas.id_grada, reservas_prereservas.tipo_usuario;
+	if localidades_ocupadas_por_usuario_parado is null then set localidades_ocupadas_por_usuario_parado = 0;
 		
 	select count(*) into localidades_ocupadas_por_usuario_parado from reservas_prereservas, gradas 
 		where reservas_prereservas.id_espectaculo = gradas.id_espectaculo 
@@ -58,7 +61,8 @@ BEGIN
 			and reservas_prereservas.id_grada = gradas.id_grada
 			and gradas.id_grada = grada
 			and reservas_prereservas.tipo_usuario = 'parado'
-		GROUP BY gradas.id_grada, reservas_prereservas.tipo_usuario
+		GROUP BY gradas.id_grada, reservas_prereservas.tipo_usuario;
+	if localidades_ocupadas_por_usuario_bebe is null then set localidades_ocupadas_por_usuario_bebe = 0;
 		
 	select count(*) into localidades_ocupadas_por_usuario_infantil from reservas_prereservas, gradas 
 		where reservas_prereservas.id_espectaculo = gradas.id_espectaculo 
@@ -67,9 +71,10 @@ BEGIN
 			and reservas_prereservas.id_grada = gradas.id_grada
 			and gradas.id_grada = grada
 			and reservas_prereservas.tipo_usuario = 'infantil'
-		GROUP BY gradas.id_grada, reservas_prereservas.tipo_usuario
+		GROUP BY gradas.id_grada, reservas_prereservas.tipo_usuario;
+	if localidades_ocupadas_por_usuario_infantil is null then set localidades_ocupadas_por_usuario_infantil = 0;
 		
-		
+        
 	select count(*) into localidades_ocupadas_por_usuario_bebe from reservas_prereservas, gradas 
 		where reservas_prereservas.id_espectaculo = gradas.id_espectaculo 
 			and reservas_prereservas.id_recinto = gradas.id_recinto
@@ -77,24 +82,30 @@ BEGIN
 			and reservas_prereservas.id_grada = gradas.id_grada
 			and gradas.id_grada = grada
 			and reservas_prereservas.tipo_usuario = 'bebe'
-		GROUP BY gradas.id_grada, reservas_prereservas.tipo_usuario
+		GROUP BY gradas.id_grada, reservas_prereservas.tipo_usuario;
+	if localidades_ocupadas_por_usuario_bebe is null then set localidades_ocupadas_por_usuario_bebe = 0;
     
-    select gradas.nombre, 
-		min(localidades_disponibles, localidades_ocupadas_por_usuario_jubilado) as localidades_jubilado,
-        gradas.precio_jubilado,
-		min(localidades_disponibles, localidades_ocupadas_por_usuario_adulto) 	as localidades_adulto,
-        gradas.precio_adulto,
-		min(localidades_disponibles, localidades_ocupadas_por_usuario_parado) 	as localidades_parado,
-        gradas.precio_parado,
-		min(localidades_disponibles, localidades_ocupadas_por_usuario_infantil) as localidades_infantil,
-        gradas.precio_infantil,
-		min(localidades_disponibles, localidades_ocupadas_por_usuario_bebe) 	as localidades_bebe,
-        gradas.precio_bebe
-		from gradas
-        where gradas.id_grada;
+		select gradas.id_grada, 
+			if(localidades_disponibles < localidades_ocupadas_por_usuario_jubilado, localidades_disponibles, localidades_ocupadas_por_usuario_jubilado) as localidades_jubilado,
+			gradas.precio_jubilado,
+			if(localidades_disponibles < localidades_ocupadas_por_usuario_adulto, localidades_disponibles, localidades_ocupadas_por_usuario_adulto) 	as localidades_adulto,
+			gradas.precio_adulto,
+			if(localidades_disponibles < localidades_ocupadas_por_usuario_parado, localidades_disponibles, localidades_ocupadas_por_usuario_parado) 	as localidades_parado,
+			gradas.precio_parado,
+			if(localidades_disponibles < localidades_ocupadas_por_usuario_infantil, localidades_disponibles, localidades_ocupadas_por_usuario_infantil) as localidades_infantil,
+			gradas.precio_infantil,
+			if(localidades_disponibles < localidades_ocupadas_por_usuario_bebe, localidades_disponibles, localidades_ocupadas_por_usuario_bebe) 		as localidades_bebe,
+			gradas.precio_bebe
+		from gradas, eventos
+        where gradas.id_grada = grada
+			and gradas.id_espectaculo = eventos.id_espectaculo
+			and gradas.id_recinto = eventos.id_recinto
+			and gradas.fecha = eventos.fecha
+			and gradas.id_espectaculo = espectaculo
+			and gradas.id_recinto = recinto
+			and gradas.fecha = fecha;
 
-END//
-
-CALL muestraGradas(1,1,'16-05-12 16:00:00',1)
-
+END //
 delimiter ;
+
+CALL muestraGradas(1,1,'16-05-12 16:00:00',1);
