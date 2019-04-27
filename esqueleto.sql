@@ -9,6 +9,7 @@ CREATE TABLE Espectaculos
   id_espectaculo INT NOT NULL AUTO_INCREMENT,
   descripcion VARCHAR(50) NOT NULL,
   tipo VARCHAR(15) NOT NULL,
+  nombre_espectaculo VARCHAR(25) NOT NULL,
   PRIMARY KEY (id_espectaculo)
 );
 
@@ -50,7 +51,7 @@ CREATE TABLE Eventos
 CREATE TABLE Clientes
 (
   dni VARCHAR(9) NOT NULL,
-  nombre VARCHAR(30) NOT NULL,
+  nombre_cliente VARCHAR(30) NOT NULL,
   iban VARCHAR(26) NOT NULL,
   nacimiento DATE NOT NULL,
   PRIMARY KEY (dni)
@@ -62,7 +63,7 @@ CREATE TABLE Gradas
   id_espectaculo INT NOT NULL,
   id_recinto INT NOT NULL,
   fecha DATETIME NOT NULL,
-  nombre VARCHAR(10) NOT NULL,
+  nombre_grada VARCHAR(10) NOT NULL,
   aforo_grada INT NOT NULL,
   precio_jubilado INT NOT NULL,
   precio_adulto INT NOT NULL,
