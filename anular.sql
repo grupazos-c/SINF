@@ -42,20 +42,9 @@ BEGIN
       AND Reservas_Prereservas.id_recinto = id_recinto
       AND Reservas_Prereservas.id_espectaculo = id_espectaculo
       AND Reservas_Prereservas.fecha = fecha;
-
-  UPDATE Localidades SET estado_localidad = 'libre'
-    WHERE Localidades.id_localidad = id_localidad
-      AND Localidades.id_grada = id_grada
-      AND Localidades.id_recinto = id_recinto
-      AND Localidades.id_espectaculo = id_espectaculo
-      AND Localidades.fecha = fecha;
   END IF;
   #Aquí cerrariamos el commit y además estaría bien devolver algo si todo fue ok o no, pero no sé como así que...
-  SELECT @resultado;
 END//
 
 delimiter ;
 
-SELECT * FROM  Reservas_Prereservas;
-call anularReserva(3,2,2,2,'17-05-10 18:00:00','12345678D',@resultado);
-SELECT * FROM  Reservas_Prereservas;
