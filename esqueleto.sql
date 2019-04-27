@@ -9,7 +9,7 @@ CREATE TABLE Espectaculos
   id_espectaculo INT NOT NULL AUTO_INCREMENT,
   descripcion VARCHAR(50) NOT NULL,
   tipo VARCHAR(15) NOT NULL,
-  nombre_espectaculo VARCHAR(15) NOT NULL,
+  nombre_espectaculo VARCHAR(25) NOT NULL,
   PRIMARY KEY (id_espectaculo)
 );
 

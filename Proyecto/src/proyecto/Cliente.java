@@ -1,11 +1,12 @@
 package proyecto;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class Cliente {
 
 	static final String JDBC_DRIVER = "com.mysql.jdb.Driver";
-	static final String DB_URL = "jdbc:mysql://localhost/Proyecto?useSSL=false"; // TODO como huevá se llame la BD
+	static final String DB_URL = "jdbc:mysql://localhost/Proyecto?useSSL=false"; // 
 
 	static final String USER = "cliente";
 	static final String PASSWORD = "1234";
@@ -57,7 +58,7 @@ public class Cliente {
 	 * 			-1:	DNI existente
 	 * 			-2: Formato de DNI incorrecto
 	 * 			-3: Formato de IBAN incorrecto
-	 * 			-87: SQLEXception //TODO, y si capturásemos esta excepción en la ventana?
+	 * 			-87: SQLEXception
 	 */
 	public static int registrarCliente(String dni, String nombre, String iban, String nacimiento) {
 		if (dni.length() != 9) {
@@ -102,7 +103,7 @@ public class Cliente {
 	 * 			-6: tipoTransaccion 
 	 * 			-7: formato de dni incorrecto
 	 * 			-8: formato de fecha incorrecto
-	 * 			-87: SQLEXception //TODO, y si capturásemos esta excepción en la ventana?
+	 * 			-87: SQLEXception 
 	 */
 	public static int reservarPreReservar(String tipoTransaccion, String dni, String tipo_usuario, int id_localidad, int id_grada,
 			int id_recinto, int id_espectaculo, String fecha) {
@@ -129,7 +130,7 @@ public class Cliente {
 			cstmt.executeUpdate();
 
 			int resultado = cstmt.getInt(9);
-			System.out.println("Resultado del registro: " + resultado);
+			System.out.println("Resultado de la reserva: " + resultado);
 
 			close();
 			return resultado;
@@ -148,7 +149,7 @@ public class Cliente {
 	 * 			-2: Este cliente no es quien ha reservado la localidad
 	 * 			-3: Formato de DNI incorrecto
 	 * 			-4: Formato de fecha incorrecto
-	 * 			-87: SQLEXception //TODO, y si capturásemos esta excepción en la ventana?
+	 * 			-87: SQLEXception 
 	 */
 	public static int anularReserva(int id_localidad, int id_grada, int id_recinto, int id_espectaculo, String fecha, String dni) {
 		if (dni.length() != 9) {
@@ -172,7 +173,7 @@ public class Cliente {
 			cstmt.executeUpdate();
 
 			int resultado = cstmt.getInt(7);
-			System.out.println("Resultado del registro: " + resultado);
+			System.out.println("Resultado de la anulación: " + resultado);
 
 			close();
 			return resultado;
@@ -182,9 +183,86 @@ public class Cliente {
 		}
 	}
 
-	public static boolean existeDni() {
-		// TODO Auto-generated method stub
-		return true;
+	/**
+	 * Checkeo de dni
+	 * @return 	true: existe, false: no existe
+	 */
+	public static boolean existeDni(String dni) {
+		if (dni.length() != 9) {
+			return false;
+		}try {
+			init();
+
+			String SQLProcedure = "{call existeCliente(?,?}";
+			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
+			cstmt.setString(1, dni);
+			cstmt.registerOutParameter(2, Types.BOOLEAN);
+			cstmt.executeUpdate();
+
+			boolean resultado = cstmt.getBoolean(2);
+			System.out.println("Existe el DNI: " + resultado);
+
+			close();
+			return resultado;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * Filtrado de eventos, devuelve un array con los eventos que seleciona
+	 * 
+	 * @param id_recinto 
+	 * @param fechamax 
+	 * @param fechamin 
+	 * @param participante 
+	 * @param precio_max 
+	 * @param jubilado 
+	 * @param adulto 
+	 * @param parado 
+	 * @param bebe 
+	 * @param infantil 
+	 */
+	
+	public static ArrayList<Evento> filtrarEventos(String espectaculo, String recinto, String fechamax, String fechamin,
+			String participante, int precio_max, boolean jubilado, boolean adulto, boolean parado, boolean bebe,
+			boolean infantil) {
+		ArrayList<Evento> eventos = new ArrayList<Evento>();
+		try {
+			init();
+
+			String SQLProcedure = "{call filtrarEventos(?,?,?,?,?,?,?,?,?,?,?)}";
+			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
+			cstmt.setString(1, espectaculo);
+			cstmt.setString(2, recinto);
+			cstmt.setString(3, fechamin);
+			cstmt.setString(4, fechamax);
+			cstmt.setString(5, participante);
+			cstmt.setInt(6, precio_max);
+			cstmt.setBoolean(7, jubilado);
+			cstmt.setBoolean(8, adulto);
+			cstmt.setBoolean(9, parado);
+			cstmt.setBoolean(10, infantil);
+			cstmt.setBoolean(11, bebe);
+
+			ResultSet rs = cstmt.executeQuery();
+			
+			while (rs.next()) {
+				Evento evento = new Evento(rs.getInt("id_espectaculo"),rs.getString("nombre_espectaculo"),rs.getInt("id_recinto"),rs.getString("nombre_recinto"),rs.getString("fecha"));
+				eventos.add(evento);
+			}
+
+			close();
+			return eventos;
+		} catch (Exception e) { //TODO solo SQL exception
+//			e.printStackTrace();
+//			return null;
+			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+			return eventos; //TODO borrar prueba
+		}
 	}
 	
 }
