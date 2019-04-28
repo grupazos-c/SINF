@@ -1,14 +1,13 @@
 /**
 *
-* -> En el Procedure de flitrarEventos hay que cambiar/rehacer/hacer el filtrado por precio dependiendo del/los tipos de usuarios porlo que se haya filtrado (como hacemos?¿?) 
+* -> El evento (diparador periodico) del procedure reservas-prereservas no fuciona
 *
 */
 
-
 DROP DATABASE IF EXISTS VigoCoffeeLoversDB;
 CREATE DATABASE VigoCoffeeLoversDB;
-GRANT ALL PRIVILEGES ON Proyecto.* TO 'cliente'@'localhost';
-USE Proyecto;
+#GRANT ALL PRIVILEGES ON Proyecto.* TO 'cliente'@'localhost';
+USE VigoCoffeeLoversDB;
 
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
@@ -125,13 +124,13 @@ CREATE TABLE Reservas_Prereservas (
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
-INSERT INTO Espectaculos VALUES (1, 'Celta-Deportivo', 'Futbol');
-INSERT INTO Espectaculos VALUES (2, 'Civil War', 'Pelicula');
-INSERT INTO Espectaculos VALUES (3, 'Joaquin Sabina', 'Concierto');
-INSERT INTO Espectaculos VALUES (4, 'Alex Ubago', 'Concierto');
-INSERT INTO Espectaculos VALUES (5, 'Deportivo-Barcelona', 'Futbol');
-INSERT INTO Espectaculos VALUES (6, 'El Rey Leon', 'Teatro');
-INSERT INTO Espectaculos VALUES (7, 'Deadpool', 'Pelicula');
+INSERT INTO Espectaculos VALUES (1, 'Celta-Deportivo', 'Partido Celta vs Deportivo', 'Futbol');
+INSERT INTO Espectaculos VALUES (2, 'Civil War', 'Proyeccion de la pelicula Civil War', 'Pelicula');
+INSERT INTO Espectaculos VALUES (3, 'Concierto Sabina', 'Concierto de Joaquin Sabina', 'Concierto');
+INSERT INTO Espectaculos VALUES (4, 'Concierto Alex Ubago', 'Concierto de Alex Ubago', 'Concierto');
+INSERT INTO Espectaculos VALUES (5, 'Deportivo-Barcelona', 'Partido Deportivo vs Barcelona', 'Futbol');
+INSERT INTO Espectaculos VALUES (6, 'El Rey Leon', 'Representacion de la obra El Rey Leon', 'Teatro');
+INSERT INTO Espectaculos VALUES (7, 'Deadpool', 'Proyeccion de la pelicula Deadpool', 'Pelicula');
 
 
 INSERT INTO Participantes VALUES ('Celta', 1);
@@ -177,7 +176,7 @@ insert into Clientes VALUES ('78941235E', 'Alba Pires Filgueira', 'ES53569578625
 insert into Clientes VALUES ('48210368I', 'Sara Smith Portela', 'ES786328645132153468748554','2012-05-12');
 
 
-INSERT INTO Gradas VALUES (1, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
+INSERT INTO Gradas VALUES (1, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 0, 0, 0);
 INSERT INTO Gradas VALUES (1, 2, 2, '17-05-10 18:00:00', 'Grada', 5, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 INSERT INTO Gradas VALUES (1, 3, 3, '18-05-12 16:00:00', 'Grada', 70, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 INSERT INTO Gradas VALUES (1, 4, 4, '19-05-12 16:00:00', 'Grada', 12, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
@@ -185,7 +184,7 @@ INSERT INTO Gradas VALUES (1, 5, 5, '20-05-12 16:00:00', 'Grada', 50, 10, 10, 10
 INSERT INTO Gradas VALUES (1, 6, 6, '21-05-12 16:00:00', 'Grada', 80, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 INSERT INTO Gradas VALUES (1, 7, 7, '22-05-12 16:00:00', 'Grada', 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 
-INSERT INTO Gradas VALUES (2, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
+INSERT INTO Gradas VALUES (2, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 0, 0, 0);
 INSERT INTO Gradas VALUES (2, 2, 2, '17-05-10 18:00:00', 'Grada', 5, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 INSERT INTO Gradas VALUES (2, 3, 3, '18-05-12 16:00:00', 'Grada', 70, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 INSERT INTO Gradas VALUES (2, 4, 4, '19-05-12 16:00:00', 'Grada', 12, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
@@ -193,7 +192,7 @@ INSERT INTO Gradas VALUES (2, 5, 5, '20-05-12 16:00:00', 'Grada', 50, 10, 10, 10
 INSERT INTO Gradas VALUES (2, 6, 6, '21-05-12 16:00:00', 'Grada', 80, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 INSERT INTO Gradas VALUES (2, 7, 7, '22-05-12 16:00:00', 'Grada', 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 
-INSERT INTO Gradas VALUES (3, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
+INSERT INTO Gradas VALUES (3, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 0, 0, 0);
 INSERT INTO Gradas VALUES (3, 2, 2, '17-05-10 18:00:00', 'Grada', 5, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 INSERT INTO Gradas VALUES (3, 3, 3, '18-05-12 16:00:00', 'Grada', 70, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 INSERT INTO Gradas VALUES (3, 4, 4, '19-05-12 16:00:00', 'Grada', 12, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
@@ -256,7 +255,7 @@ INSERT INTO Reservas_Prereservas VALUES (3, 3, 3, 3, '18-05-12 16:00:00', '48210
 
 
 
-
+/*INNECESARIO: si se borra la base de datos tambien se borran sus Procedures*/
 drop PROCEDURE if exists registrarCliente;
 drop PROCEDURE if exists anularReserva;
 drop PROCEDURE if exists cambiarDatosCliente;
@@ -426,7 +425,7 @@ BEGIN
 		CREATE TEMPORARY TABLE resultado select eventos.* from eventos where estado_evento = 'abierto';
 	else
 		CREATE TEMPORARY TABLE resultado select eventos.* from eventos, gradas 
-		where eventos.id_espectaculo = gradas.id_espectaculo and eventos.id_recinto = gradas.id_recinto and eventos.fecha = gradas.fecha
+		where eventos.id_espectaculo = gradas.id_espectaculo and eventos.id_recinto = gradas.id_recinto and eventos.fecha = gradas.fecha and estado_evento = 'abierto'
         and 0 < if(jubilado = true	, gradas.maximo_jubilado	, 1)
         and 0 < if(adulto 	= true	, gradas.maximo_adulto		, 1)
         and 0 < if(parado 	= true	, gradas.maximo_parado		, 1)
@@ -464,23 +463,20 @@ BEGIN
 				AND espectaculos.id_espectaculo = participantes.id_espectaculo AND participantes.participante = filtro_participante;
 		truncate resultado; insert into resultado select * from aux; truncate aux;
     end if;
-    /*
+
 	if filtro_precio_max is not null then
 		insert into aux select resultado.* from resultado, gradas 
 			where resultado.id_espectaculo = gradas.id_espectaculo AND resultado.id_recinto = gradas.id_recinto AND resultado.fecha = gradas.fecha 
-            AND filtro_precio_max > 
-						CASE
-							WHEN filtro_usuario = 'jubilado'	THEN precio_jubilado
-							WHEN filtro_usuario = 'infantil'	THEN precio_infantil
-							WHEN filtro_usuario = 'parado' 		THEN precio_parado
-							WHEN filtro_usuario = 'bebe' 		THEN precio_bebe
-							ELSE precio_adulto
-						END
+				and filtro_precio_max <= if(jubilado = true	, gradas.precio_jubilado	, filtro_precio_max)
+				and filtro_precio_max <= if(adulto 	 = true	, gradas.precio_adulto		, filtro_precio_max)
+				and filtro_precio_max <= if(parado 	 = true	, gradas.precio_parado		, filtro_precio_max)
+				and filtro_precio_max <= if(infantil = true	, gradas.precio_infantil	, filtro_precio_max)
+				and filtro_precio_max <= if(bebe 	 = true	, gradas.precio_bebe		, filtro_precio_max)
 				group by resultado.id_espectaculo, resultado.id_recinto, resultado.fecha;
 		truncate resultado; insert into resultado select * from aux; DROP TABLE aux;
     end if;
-    */
-	select resultado.id_espectaculo, resultado.nombre_espectaculo, resultado.id_recinto, recintos.nombre_recinto, resultado.fecha
+
+	select resultado.id_espectaculo, espectaculos.nombre_espectaculo, resultado.id_recinto, recintos.nombre_recinto, resultado.fecha
 		from resultado, espectaculos, recintos where resultado.id_espectaculo = espectaculos.id_espectaculo and resultado.id_recinto = recintos.id_recinto;
 	
     DROP TABLE resultado;
@@ -615,7 +611,7 @@ END //
 /******************************************************************************************************************************************************************/
 create procedure obtenerEntradasCompradasCliente(IN dni varchar(9))
 begin
-	select reservas_prereservas.*, 
+	select espectaculos.nombre_espectaculo, recintos.nombre_recinto, fecha, gradas.nombre_grada, reservas_prereservas.tipo_usuario,
 		case 
 			when reservas_prereservas.tipo_usuario = 'jubilado' then gradas.precio_jubilado
             when reservas_prereservas.tipo_usuario = 'adulto' then gradas.precio_adulto
@@ -623,8 +619,11 @@ begin
             when reservas_prereservas.tipo_usuario = 'infantil' then gradas.precio_infantil
             when reservas_prereservas.tipo_usuario = 'bebe' then gradas.precio_bebe
 		end as precio
-	from reservas_prereservas, gradas where reservas_prereservas.dni = dni and reservas_prereservas.id_espectaculo = gradas.id_espectaculo
-		and reservas_prereservas.id_recinto = gradas.id_recinto and reservas_prereservas.fecha = gradas.fecha and reservas_prereservas.id_grada = gradas.id_grada;
+	from reservas_prereservas, gradas, espectaculos, recintos where reservas_prereservas.dni = dni 
+		and espectaculos.id_espectaculo = gradas.id_espectaculo = reservas_prereservas.id_espectaculo 
+        and recintos.id_recinto = gradas.id_recinto = reservas_prereservas.id_recinto
+        and reservas_prereservas.fecha = gradas.fecha 
+        and reservas_prereservas.id_grada = gradas.id_grada;
 end //
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
@@ -639,7 +638,7 @@ end //
 /******************************************************************************************************************************************************************/
 create procedure obtenerDatosCliente(IN dni varchar(9))
 begin
-	select * from clientes where clientes.dni = dni;
+	select nombre_cliente, iban, nacimiento from clientes where clientes.dni = dni;
 end //
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
@@ -722,7 +721,7 @@ IF estado = 'libre' /*la localidad está libre*/
     UPDATE Localidades SET estado_localidad = tipo_transaccion WHERE Localidades.id_localidad= id_localidad AND Localidades.id_grada= id_grada AND Localidades.id_recinto= id_recinto AND Localidades.id_espectaculo= id_espectaculo AND Localidades.fecha= fecha;
     INSERT INTO Reservas_Prereservas VALUES (id_localidad,id_grada,id_recinto,id_espectaculo,fecha,dni, NULL,tipo_usuario);
 	
-    /*Añadimos el disparador periodico (evento) para eliminar la prereserva pasados los T1 minutos de tiempo de validez*/
+    /*Añadimos el disparador periodico (evento) para eliminar la prereserva pasados los T1 minutos de tiempo de validez*
 	IF tipo_transaccion = 'pre-reservado' THEN
 		CREATE EVENT evento_preserva ON SCHEDULE at now() + interval (SELECT T1 from eventos where id_espectaculo = espectaculo and id_recinto = recinto and reservas_prereservas.fecha = fecha) minute
 		DO 
@@ -730,7 +729,7 @@ IF estado = 'libre' /*la localidad está libre*/
 				where id_localidad = filtro_localidad and reservas_prereservas.dni = dni and id_recinto = recinto 
 					and id_espectaculo = espectaculo and reservas_prereservas.fecha = fecha;
 	END IF;
-	/**********************************************************************************************************/
+	**********************************************************************************************************/
     
     SET id_transaccion=1;
     LEAVE reservar;
@@ -741,7 +740,7 @@ ELSEIF estado='pre-reservado' AND comprobacion = dni AND tipo_transaccion = 'res
     /*Actualizamos el estado de la localidad de pre-reservado a reservado*/
     UPDATE Localidades SET estado_localidad = 'reservado' WHERE Localidades.id_localidad= id_localidad AND Localidades.id_grada= id_grada AND Localidades.id_recinto= id_recinto AND Localidades.id_espectaculo= id_espectaculo AND Localidades.fecha= fecha;
 
-	/*Añadimos el disparador periodico (evento) para eliminar la prereserva pasados los T1 minutos de tiempo de validez*/
+	/*Añadimos el disparador periodico (evento) para eliminar la prereserva pasados los T1 minutos de tiempo de validez*
 	IF tipo_transaccion = 'pre-reservado' THEN
 		CREATE EVENT evento_preserva ON SCHEDULE at now() + interval (SELECT T1 from eventos where id_espectaculo = espectaculo and id_recinto = recinto and reservas_prereservas.fecha = fecha) minute
 		DO 
@@ -749,7 +748,7 @@ ELSEIF estado='pre-reservado' AND comprobacion = dni AND tipo_transaccion = 'res
 				where id_localidad = filtro_localidad and reservas_prereservas.dni = dni and id_recinto = recinto 
 					and id_espectaculo = espectaculo and reservas_prereservas.fecha = fecha;
 	END IF;
-	/**********************************************************************************************************/
+	**********************************************************************************************************/
     
     SET id_transaccion=1;
     LEAVE reservar;
