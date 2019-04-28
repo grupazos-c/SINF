@@ -3,10 +3,10 @@ package proyecto;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Cliente {
+public class Aplicacion {
 
 	static final String JDBC_DRIVER = "com.mysql.jdb.Driver";
-	static final String DB_URL = "jdbc:mysql://localhost/Proyecto?useSSL=false"; // 
+	static final String DB_URL = "jdbc:mysql://localhost/Proyecto?useSSL=false"; //
 
 	static final String USER = "cliente";
 	static final String PASSWORD = "1234";
@@ -50,15 +50,12 @@ public class Cliente {
 
 		return;
 	}
-	
+
 	/**
 	 * Resgitro de Cliente en la BD
 	 * 
-	 * @return 	 0: 	Query OK
-	 * 			-1:	DNI existente
-	 * 			-2: Formato de DNI incorrecto
-	 * 			-3: Formato de IBAN incorrecto
-	 * 			-87: SQLEXception
+	 * @return 0: Query OK -1: DNI existente -2: Formato de DNI incorrecto -3:
+	 *         Formato de IBAN incorrecto -87: SQLEXception
 	 */
 	public static int registrarCliente(String dni, String nombre, String iban, String nacimiento) {
 		if (dni.length() != 9) {
@@ -89,29 +86,24 @@ public class Cliente {
 			return -87;
 		}
 	}
-	
-	
+
 	/**
 	 * Reserva-Prereserva de entradas
 	 * 
-	 * @return 	 0: 	Query OK
-	 * 			-1:	Localidad no libre, o está pre-reservada por otro usuario
-	 * 			-2: tipo_usuario desconocido
-	 * 			-3: No se ofrecen entradas para este tipo_usuario
-	 * 			-4: No quedan entradas disponibles para este tipo_usuario
-	 * 			-5: No quedan más entradas disponibles para este evento
-	 * 			-6: tipoTransaccion 
-	 * 			-7: formato de dni incorrecto
-	 * 			-8: formato de fecha incorrecto
-	 * 			-87: SQLEXception 
+	 * @return 0: Query OK -1: Localidad no libre, o está pre-reservada por otro
+	 *         usuario -2: tipo_usuario desconocido -3: No se ofrecen entradas para
+	 *         este tipo_usuario -4: No quedan entradas disponibles para este
+	 *         tipo_usuario -5: No quedan más entradas disponibles para este evento
+	 *         -6: tipoTransaccion -7: formato de dni incorrecto -8: formato de
+	 *         fecha incorrecto -87: SQLEXception
 	 */
-	public static int reservarPreReservar(String tipoTransaccion, String dni, String tipo_usuario, int id_localidad, int id_grada,
-			int id_recinto, int id_espectaculo, String fecha) {
+	public static int reservarPreReservar(String tipoTransaccion, String dni, String tipo_usuario, int id_localidad,
+			int id_grada, int id_recinto, int id_espectaculo, String fecha) {
 		if (dni.length() != 9) {
 			return -7;
 		} else if (fecha.length() != 26) {
 			return -8;
-		} 
+		}
 
 		try {
 			init();
@@ -140,18 +132,15 @@ public class Cliente {
 		}
 	}
 
-
 	/**
 	 * Anulación de reservaResgitro de Cliente en la BD
 	 * 
-	 * @return 	 0: 	Query OK
-	 * 			-1:	La localidad no está reservada ni pre-reservada
-	 * 			-2: Este cliente no es quien ha reservado la localidad
-	 * 			-3: Formato de DNI incorrecto
-	 * 			-4: Formato de fecha incorrecto
-	 * 			-87: SQLEXception 
+	 * @return 0: Query OK -1: La localidad no está reservada ni pre-reservada -2:
+	 *         Este cliente no es quien ha reservado la localidad -3: Formato de DNI
+	 *         incorrecto -4: Formato de fecha incorrecto -87: SQLEXception
 	 */
-	public static int anularReserva(int id_localidad, int id_grada, int id_recinto, int id_espectaculo, String fecha, String dni) {
+	public static int anularReserva(int id_localidad, int id_grada, int id_recinto, int id_espectaculo, String fecha,
+			String dni) {
 		if (dni.length() != 9) {
 			return -3;
 		} else if (fecha.length() != 26) {
@@ -185,12 +174,14 @@ public class Cliente {
 
 	/**
 	 * Checkeo de dni
-	 * @return 	true: existe, false: no existe
+	 * 
+	 * @return true: existe, false: no existe
 	 */
 	public static boolean existeDni(String dni) {
 		if (dni.length() != 9) {
 			return false;
-		}try {
+		}
+		try {
 			init();
 
 			String SQLProcedure = "{call existeCliente(?,?}";
@@ -209,20 +200,20 @@ public class Cliente {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Filtrado de eventos, devuelve un array con los eventos que seleciona
 	 * 
-	 * @param id_recinto 
-	 * @param fechamax 
-	 * @param fechamin 
-	 * @param participante 
-	 * @param precio_max 
-	 * @param jubilado 
-	 * @param adulto 
-	 * @param parado 
-	 * @param bebe 
-	 * @param infantil 
+	 * @param id_recinto
+	 * @param fechamax
+	 * @param fechamin
+	 * @param participante
+	 * @param precio_max
+	 * @param jubilado
+	 * @param adulto
+	 * @param parado
+	 * @param bebe
+	 * @param infantil
 	 */
 	public static ArrayList<Evento> filtrarEventos(String espectaculo, String recinto, String fechamax, String fechamin,
 			String participante, int precio_max, boolean jubilado, boolean adulto, boolean parado, boolean bebe,
@@ -246,15 +237,16 @@ public class Cliente {
 			cstmt.setBoolean(11, bebe);
 
 			ResultSet rs = cstmt.executeQuery();
-			
+
 			while (rs.next()) {
-				Evento evento = new Evento(rs.getInt("id_espectaculo"),rs.getString("nombre_espectaculo"),rs.getInt("id_recinto"),rs.getString("nombre_recinto"),rs.getString("fecha"));
+				Evento evento = new Evento(rs.getInt("id_espectaculo"), rs.getString("nombre_espectaculo"),
+						rs.getInt("id_recinto"), rs.getString("nombre_recinto"), rs.getString("fecha"));
 				eventos.add(evento);
 			}
 
 			close();
 			return eventos;
-		} catch (Exception e) { //TODO solo SQL exception
+		} catch (Exception e) { // TODO solo SQL exception
 //			e.printStackTrace();
 //			return null;
 			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
@@ -281,7 +273,7 @@ public class Cliente {
 			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
 			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
 			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-			return eventos; //TODO borrar prueba
+			return eventos; // TODO borrar prueba
 		}
 	}
 
@@ -291,25 +283,73 @@ public class Cliente {
 		try {
 			init();
 
-			String SQLProcedure = "{call muestraGradas(?,?,?)}"; 	//Primero bucamos cuantas gradas iteraremos
+			String SQLProcedure = "{call muestraGradas(?,?,?)}"; // Primero bucamos cuantas gradas iteraremos
 			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
 			cstmt.setInt(1, evento.getId_espectaculo());
 			cstmt.setInt(2, evento.getId_recinto());
 			cstmt.setString(3, evento.getFecha());
 
 			ResultSet rs = cstmt.executeQuery();
-			
+
 			while (rs.next()) {
 				int id_grada = rs.getInt(1);
 				id_gradas.add(id_grada);
 			}
 
+			for (Integer integer : id_gradas) {
+				SQLProcedure = "{call infoGradas(?,?,?,?)}"; // Ahora llamaos al info una vez por grada GG
+				CallableStatement cstmt2 = conn.prepareCall(SQLProcedure);
+				cstmt.setInt(1, evento.getId_espectaculo());
+				cstmt.setInt(2, evento.getId_recinto());
+				cstmt.setString(3, evento.getFecha());
+				cstmt.setInt(4, integer);
+
+				ResultSet rs2 = cstmt2.executeQuery();
+
+				while (rs2.next()) {
+					Grada grada = new Grada(evento, rs2.getString("nombre_grada"), rs2.getInt("id_grada"),
+							rs2.getInt("maximo_adulto"), rs2.getInt("maximo_infantil"), rs2.getInt("maximo_parado"),
+							rs2.getInt("maximo_jubilado"), rs2.getInt("maximo_bebe"), rs2.getInt("precio_adulto"),
+							rs2.getInt("precio_infantil"), rs2.getInt("precio_parado"), rs2.getInt("precio_jubilado"),
+							rs2.getInt("precio_bebe"));
+					gradas.add(grada);
+				}
+			}
+
 			close();
 			return gradas;
-		} catch (Exception e) { //TODO solo SQL exception 
-			e.printStackTrace();
-			return null;
+		} catch (Exception e) { // TODO solo SQL exception
+			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+			return gradas;
 		}
 	}
-	
+
 }

@@ -33,11 +33,11 @@ public class Grada extends Evento{
 	 * @param precioParado
 	 * @param precioJubilado
 	 * @param precioBebe
-	 */
-	public Grada(int id_espectaculo, String espectaculo, int id_recinto, String recinto, String fecha, String nombre,
-			int id_grada, int maxAdulto, int maxInfantil, int maxParado, int maxJubilado, int maxBebe, int precioAdulto,
-			int precioInfantil, int precioParado, int precioJubilado, int precioBebe) {
-		super(id_espectaculo, espectaculo, id_recinto, recinto, fecha);
+	 */	
+	public Grada(Evento evento, String nombre, int id_grada, int maxAdulto, int maxInfantil, int maxParado,
+			int maxJubilado, int maxBebe, int precioAdulto, int precioInfantil, int precioParado, int precioJubilado,
+			int precioBebe) {
+		super(evento.getId_espectaculo(),evento.getEspectaculo(),evento.getId_recinto(), evento.getRecinto(), evento.getFecha());
 		this.nombre = nombre;
 		this.id_grada = id_grada;
 		this.maxAdulto = maxAdulto;
