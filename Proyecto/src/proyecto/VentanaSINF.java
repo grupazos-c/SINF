@@ -9,9 +9,10 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.time.*; 
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Stack;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -32,7 +33,7 @@ public class VentanaSINF extends JFrame {
 	Color colorFondo = new Color(209, 125, 146);
 	Color colorprincipal = Color.WHITE;
 	Color colorDetalles = new Color(207, 60, 95);
-	
+
 	MouseListener ml;
 
 	private String DNI = "0";
@@ -43,7 +44,7 @@ public class VentanaSINF extends JFrame {
 	 * panelPrincipal: aquí se mostrarán los eventos, nuestras entradas, o lo que
 	 * toque
 	 */
-	JPanel panelLogo, panelLogin, panelBusqueda, panelPrincipal, panelEventos, panelGradas;
+	JPanel panelLogo, panelLogin, panelBusqueda, panelPrincipal, panelEventos, panelGradas, panelEntradas;
 	private JPanel contentPane;
 
 	/**
@@ -221,33 +222,44 @@ public class VentanaSINF extends JFrame {
 		panelBusqueda.add(Box.createRigidArea(new Dimension(1, 5)));
 		panelBusqueda.add(horamax);
 
-		/** 
-		 * Panel Principal 
+		/**
+		 * Panel Principal
 		 */
 		panelPrincipal = new JPanel();
 		panelEventos = new JPanel();
 		panelGradas = new JPanel();
+		panelEntradas = new JPanel();
 
-        panelPrincipal.setBorder(new EmptyBorder(10, 10, 10, 10));
-        panelPrincipal.setBackground(colorprincipal);
-        panelPrincipal.setLayout(new CardLayout());
-		
+		panelPrincipal.setBorder(new EmptyBorder(2, 2, 2, 2));
+		panelPrincipal.setBackground(colorprincipal);
+		panelPrincipal.setLayout(new CardLayout());
+
 		JScrollPane scrollEventos = new JScrollPane(panelEventos);
 		scrollEventos.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollEventos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollEventos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+		JScrollPane scrollEntradas = new JScrollPane(panelEntradas);
+		scrollEntradas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollEntradas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 		JScrollPane scrollGradas = new JScrollPane(panelGradas);
 		scrollGradas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollGradas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        
+
+		panelEntradas.setLayout(new BoxLayout(panelEntradas, BoxLayout.Y_AXIS));
+		panelEntradas.setBorder(new EmptyBorder(5, 5, 5, 5));
+		panelEventos.setBorder(new EmptyBorder(5, 5, 5, 5));
+		panelGradas.setBorder(new EmptyBorder(5, 5, 5, 5));
 		panelEventos.setLayout(new BoxLayout(panelEventos, BoxLayout.Y_AXIS));
-		panelGradas.setLayout(new GridLayout(0, 6, 10, 10));
+		panelGradas.setLayout(new GridLayout(0, 6, 10, 25));
 		panelEventos.setBackground(colorprincipal);
 		panelGradas.setBackground(colorprincipal);
-		
-		panelPrincipal.add(panelEventos, "Eventos");
-		panelPrincipal.add(panelGradas, "Gradas");
-		
+		panelEntradas.setBackground(colorprincipal);
+
+		panelPrincipal.add(scrollEventos, "Eventos");
+		panelPrincipal.add(scrollGradas, "Gradas");
+		panelPrincipal.add(scrollEntradas, "Entradas");
+
 		/**
 		 * Orden de paneles en el Pane
 		 */
@@ -296,7 +308,7 @@ public class VentanaSINF extends JFrame {
 
 		/***********************************
 		 * Action Listener
-		 ***********************************/   //TODO
+		 ***********************************/ 
 		ActionListener al = new ActionListener() {
 
 			@Override
@@ -312,7 +324,7 @@ public class VentanaSINF extends JFrame {
 					registro();
 					UsuarioJL.setText(DNI);
 				} else if (e.getSource() == MisEntradasJB) {
-					
+					misEntradas(DNI);
 				} else if (e.getSource() == MisDatosJB) {
 					misDatos();
 				} else if (e.getSource() == BuscarJB) {
@@ -450,8 +462,8 @@ public class VentanaSINF extends JFrame {
 	}
 
 	private Box seleccionarFechaNac(String fechaPredet) {
-		//año-mes-dia
-		String[] fecha = null;
+		// año-mes-dia
+		String[] fecha = new String[3];
 		try {
 			fecha = fechaPredet.split("-");
 		} catch (NullPointerException e) {
@@ -459,7 +471,7 @@ public class VentanaSINF extends JFrame {
 			fecha[1] = " - Mes - ";
 			fecha[2] = " - Día - ";
 		}
-		
+
 		Box caja = new Box(BoxLayout.X_AXIS);
 
 		JComboBox<String> dia = new JComboBox<String>();
@@ -479,7 +491,7 @@ public class VentanaSINF extends JFrame {
 		for (int i = 2019; i >= 1900; i--) {
 			anho.addItem(String.valueOf(i));
 		}
-		
+
 		anho.setSelectedItem(fecha[2]);
 		mes.setSelectedItem(fecha[1]);
 		dia.setSelectedItem(fecha[0]);
@@ -530,9 +542,12 @@ public class VentanaSINF extends JFrame {
 				JOptionPane.showMessageDialog(null, "DNI existente");
 				break;
 			case -2:
-				JOptionPane.showMessageDialog(null, "Formato de DNI incorrecto");
+				JOptionPane.showMessageDialog(null, "Cliente menor de edad");
 				break;
 			case -3:
+				JOptionPane.showMessageDialog(null, "Formato de DNI incorrecto");
+				break;
+			case -4:
 				JOptionPane.showMessageDialog(null, "Formato de IBAN incorrecto");
 				break;
 			case -87:
@@ -563,28 +578,34 @@ public class VentanaSINF extends JFrame {
 	 * @param fechaMin
 	 * @param fechaMax
 	 */
-	private void buscar(boolean adulto, boolean infantil, boolean parado, boolean jubilado, boolean bebe, String participantes, String espectaculo, String recinto, int precioMax, String fechaMin, String fechaMax ) {
-		ArrayList<Evento> eventosFiltrados = Aplicacion.filtrarEventos(espectaculo, recinto, fechaMax, fechaMin, participantes, precioMax, jubilado, adulto, parado, infantil, bebe);
+	private void buscar(boolean adulto, boolean infantil, boolean parado, boolean jubilado, boolean bebe,
+			String participantes, String espectaculo, String recinto, int precioMax, String fechaMin, String fechaMax) {
+		ArrayList<Evento> eventosFiltrados = Aplicacion.filtrarEventos(espectaculo, recinto, fechaMax, fechaMin,
+				participantes, precioMax, jubilado, adulto, parado, infantil, bebe);
 		panelEventos.removeAll();
 		for (Evento evento : eventosFiltrados) {
 			JLabel texto = new JLabel(evento.toString());
 			texto.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
 			texto.setForeground(Color.BLACK);
-			texto.addMouseListener(new MouseAdapter() {@Override
-			    public void mouseEntered(MouseEvent e) {
-					texto.setForeground(new Color(new Random().nextInt(16777215))); //XD
+			texto.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					texto.setForeground(new Color(new Random().nextInt(16777215))); // XD
 //			    	texto.setForeground(Color.BLUE);
 					setCursor(new Cursor(Cursor.HAND_CURSOR));
-			    }
-			    @Override
-			    public void mouseExited(MouseEvent e) {
-			    	texto.setForeground(Color.BLACK);
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					texto.setForeground(Color.BLACK);
 					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			    }
-			    @Override
-		    	public void mouseClicked(MouseEvent e) {
-			    	accederEvento(evento);
-		    	}
+				}
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					accederEvento(evento);
+				}
+
 				private void accederEvento(Evento evento) {
 					ArrayList<Grada> gradas = Aplicacion.buscarGradas(evento);
 					CardLayout cl = (CardLayout) panelPrincipal.getLayout();
@@ -599,7 +620,6 @@ public class VentanaSINF extends JFrame {
 		cl.show(panelPrincipal, "Eventos");
 		panelEventos.updateUI();
 	}
-	
 
 	private void fillGradas(ArrayList<Grada> gradas) {
 		panelGradas.removeAll();
@@ -616,8 +636,8 @@ public class VentanaSINF extends JFrame {
 			Box cajaJubilado = new Box(BoxLayout.X_AXIS);
 			Box cajaParado = new Box(BoxLayout.X_AXIS);
 			Box cajaBebe = new Box(BoxLayout.X_AXIS);
-			
-			JComboBox<Integer> cantidadAdulto = new  JComboBox<Integer>();
+
+			JComboBox<Integer> cantidadAdulto = new JComboBox<Integer>();
 			cantidadAdulto.setMaximumSize(new Dimension(50, 25));
 			cajaAdulto.add(cantidadAdulto);
 			for (int i = 0; i <= grada.getMaxAdulto(); i++) {
@@ -625,8 +645,8 @@ public class VentanaSINF extends JFrame {
 			}
 			cajaAdulto.add(new JLabel(" " + String.valueOf(grada.getPrecioAdulto())));
 			panelGradas.add(cajaAdulto);
-			
-			JComboBox<Integer> cantidadInfantil = new  JComboBox<Integer>();
+
+			JComboBox<Integer> cantidadInfantil = new JComboBox<Integer>();
 			cantidadInfantil.setMaximumSize(new Dimension(50, 25));
 			cajaInfantil.add(cantidadInfantil);
 			for (int i = 0; i <= grada.getMaxInfantil(); i++) {
@@ -634,8 +654,8 @@ public class VentanaSINF extends JFrame {
 			}
 			cajaInfantil.add(new JLabel(" " + String.valueOf(grada.getPrecioInfantil())));
 			panelGradas.add(cajaInfantil);
-			
-			JComboBox<Integer> cantidadJubilado = new  JComboBox<Integer>();
+
+			JComboBox<Integer> cantidadJubilado = new JComboBox<Integer>();
 			cantidadJubilado.setMaximumSize(new Dimension(50, 25));
 			cajaJubilado.add(cantidadJubilado);
 			for (int i = 0; i <= grada.getMaxJubilado(); i++) {
@@ -643,8 +663,8 @@ public class VentanaSINF extends JFrame {
 			}
 			cajaJubilado.add(new JLabel(" " + String.valueOf(grada.getPrecioJubilado())));
 			panelGradas.add(cajaJubilado);
-			
-			JComboBox<Integer> cantidadParado = new  JComboBox<Integer>();
+
+			JComboBox<Integer> cantidadParado = new JComboBox<Integer>();
 			cantidadParado.setMaximumSize(new Dimension(50, 25));
 			cajaParado.add(cantidadParado);
 			for (int i = 0; i <= grada.getMaxParado(); i++) {
@@ -652,8 +672,8 @@ public class VentanaSINF extends JFrame {
 			}
 			cajaParado.add(new JLabel(" " + String.valueOf(grada.getPrecioParado())));
 			panelGradas.add(cajaParado);
-			
-			JComboBox<Integer> cantidadBebe = new  JComboBox<Integer>();
+
+			JComboBox<Integer> cantidadBebe = new JComboBox<Integer>();
 			cantidadBebe.setMaximumSize(new Dimension(50, 25));
 			cajaBebe.add(cantidadBebe);
 			for (int i = 0; i <= grada.getMaxBebe(); i++) {
@@ -661,10 +681,10 @@ public class VentanaSINF extends JFrame {
 			}
 			cajaBebe.add(new JLabel(" " + String.valueOf(grada.getPrecioBebe())));
 			panelGradas.add(cajaBebe);
-					}
+		}
 
-		
 		JButton volverJB = new JButton("Volver");
+		volverJB.setMaximumSize(new Dimension(1000, 50));
 		volverJB.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -672,17 +692,26 @@ public class VentanaSINF extends JFrame {
 				cl.show(panelPrincipal, "Eventos");
 			}
 		});
-		JButton preReservaJB = new JButton("Pre-Reservar");//TODO
+		JButton preReservaJB = new JButton("Pre-Reservar");// TODO
 		JButton compraJB = new JButton("Comprar");
-		
-		panelGradas.add(volverJB);
-		panelGradas.add(new Box(0));
-		panelGradas.add(new Box(0));	
-		panelGradas.add(new Box(0));	
-		panelGradas.add(preReservaJB);
-		panelGradas.add(compraJB);
+		preReservaJB.setMaximumSize(new Dimension(1000, 50));
+		compraJB.setMaximumSize(new Dimension(1000, 50));
+
+		Box cajavolver = new Box(BoxLayout.Y_AXIS);
+		cajavolver.add(volverJB);
+		Box cajapr = new Box(BoxLayout.Y_AXIS);
+		cajapr.add(preReservaJB);
+		Box cajavcom = new Box(BoxLayout.Y_AXIS);
+		cajavcom.add(compraJB);
+
+		panelGradas.add(cajavolver);
+		panelGradas.add(new Box(BoxLayout.Y_AXIS));
+		panelGradas.add(new Box(BoxLayout.Y_AXIS));
+		panelGradas.add(new Box(BoxLayout.Y_AXIS));
+		panelGradas.add(cajapr);
+		panelGradas.add(cajavcom);
 	}
-	
+
 	protected void misDatos() {
 		Cliente cliente = Aplicacion.obtenerCliente(DNI);
 		JButton editarJB = new JButton("Editar");
@@ -692,17 +721,17 @@ public class VentanaSINF extends JFrame {
 				editarDatos(cliente);
 			}
 		});
-		Object[] message = { "DNI:" + DNI, "Nombre:" + cliente.getNombre(), "IBAN:" + cliente.getIban(), "Fecha de Nacimiento:" + cliente.getFecha_nacimiento(), editarJB};
+		Object[] message = { "DNI:" + DNI, "Nombre:" + cliente.getNombre(), "IBAN:" + cliente.getIban(),
+				"Fecha de Nacimiento:" + cliente.getFecha_nacimiento(), editarJB };
 
-		JOptionPane.showConfirmDialog(null, message, "Datos personales" , JOptionPane.CLOSED_OPTION);		
+		JOptionPane.showConfirmDialog(null, message, "Datos personales", JOptionPane.CLOSED_OPTION);
 	}
 
 	protected void editarDatos(Cliente cliente) {
 		JTextField nombreJT = new JTextField(cliente.getNombre());
 		JTextField ibanJT = new JTextField(cliente.getIban());
 		Box fechavox = seleccionarFechaNac(cliente.getFecha_nacimiento());
-		Object[] message = { "DNI: " + DNI, "Nombre: ", nombreJT, "IBAN: ", ibanJT,
-				"Fecha de Nacimiento: ", fechavox };
+		Object[] message = { "DNI: " + DNI, "Nombre: ", nombreJT, "IBAN: ", ibanJT, "Fecha de Nacimiento: ", fechavox };
 
 		int option = JOptionPane.showConfirmDialog(null, message, "Datos personales", JOptionPane.OK_OPTION);
 		if (option == JOptionPane.OK_OPTION) {
@@ -710,15 +739,108 @@ public class VentanaSINF extends JFrame {
 			String iban = ibanJT.getText();
 			if (nombre.length() > 30) {
 				JOptionPane.showMessageDialog(null, "Nombre demasiado Grande");
-			} else if (iban.length() != 26) {
-				JOptionPane.showMessageDialog(null, "formato de IBAN incorrecto");
 			} else {
+				int resultado;
 				try {
 					String fechanac = fechaNac2String(obtenerFechaHora(fechavox, null));
-					Aplicacion.modificarCliente(DNI, nombre, iban, fechanac);
+					resultado = Aplicacion.modificarCliente(DNI, nombre, iban, fechanac);
 				} catch (NullPointerException e) {
-					Aplicacion.modificarCliente(DNI, nombre, iban, cliente.getFecha_nacimiento());
+					resultado = Aplicacion.modificarCliente(DNI, nombre, iban, cliente.getFecha_nacimiento());
 				}
+				switch (resultado) {
+				case 0:
+					JOptionPane.showMessageDialog(null, "Actualización satisfactoria");
+					misEntradas(DNI);
+					break;
+				case -1:
+					JOptionPane.showMessageDialog(null, "DNI desconocido");
+					break;
+				case -2:
+					JOptionPane.showMessageDialog(null, "DNI incorrecto");
+					break;
+				case -3:
+					JOptionPane.showMessageDialog(null, "Formato de IBAN incorrecto");
+					break;
+				case -87:
+					JOptionPane.showMessageDialog(null, "SQLEXception");
+					break;
+
+				default:
+					JOptionPane.showMessageDialog(null, "Unexpected Error");
+					break;
+				}
+
+			}
+		}
+	}
+
+	private void misEntradas(String dni) {
+		ArrayList<Entrada> entradas = Aplicacion.obtenerEntradasCliente(dni);
+		panelEntradas.removeAll();
+
+		JLabel titulo = new JLabel("Estas son tus entradas, haz click sobre alguna de ellas para anularla");
+		titulo.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+		titulo.setForeground(Color.BLACK);
+		panelEntradas.add(titulo);
+		panelEntradas.add(Box.createRigidArea(new Dimension(1, 20)));
+
+		for (Entrada entrada : entradas) {
+			JLabel texto = new JLabel(entrada.toString());
+			texto.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+			texto.setForeground(Color.BLACK);
+			texto.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					texto.setForeground(colorDetalles);
+					setCursor(new Cursor(Cursor.HAND_CURSOR));
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					texto.setForeground(Color.BLACK);
+					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				}
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					anularEntrada(entrada);
+				}
+			});
+			panelEntradas.add(texto);
+			panelEntradas.add(Box.createRigidArea(new Dimension(1, 10)));
+		}
+		CardLayout cl = (CardLayout) panelPrincipal.getLayout();
+		cl.show(panelPrincipal, "Entradas");
+		panelEntradas.updateUI();
+	}
+
+	protected void anularEntrada(Entrada entrada) {
+		int option = JOptionPane.showConfirmDialog(null, "Seguro que desea anular la entrada?");
+
+		if (option == JOptionPane.OK_OPTION) {
+			int resultado = Aplicacion.anularReserva(entrada.getId_localidad(), entrada.getId_grada(),
+					entrada.getId_recinto(), entrada.getId_espectaculo(), entrada.getFecha(), DNI);
+			switch (resultado) {
+			case 0:
+				JOptionPane.showMessageDialog(null, "Anulación confirmada");
+				misEntradas(DNI);
+				break;
+			case -1:
+				JOptionPane.showMessageDialog(null, "Localidad no reservada");
+				break;
+			case -2:
+				JOptionPane.showMessageDialog(null, "Localidad reservada por otro usuario");
+				break;
+			case -3:
+				JOptionPane.showMessageDialog(null, "Formato de DNI incorrecto");
+				break;
+			case -87:
+				JOptionPane.showMessageDialog(null, "SQLEXception");
+				break;
+
+			default:
+				JOptionPane.showMessageDialog(null, "Unexpected Error");
+				break;
 			}
 		}
 	}
