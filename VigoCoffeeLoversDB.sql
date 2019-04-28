@@ -128,7 +128,6 @@ DELETE FROM Recintos;
 DELETE FROM Clientes;
 
 
-
 INSERT INTO Espectaculos VALUES (1, 'Celta-Deportivo', 'Futbol');
 INSERT INTO Espectaculos VALUES (2, 'Civil War', 'Pelicula');
 INSERT INTO Espectaculos VALUES (3, 'Joaquin Sabina', 'Concierto');
@@ -234,27 +233,27 @@ INSERT INTO Eventos VALUES (2, 13, '17-05-12 19:00:00', 25,'abierto', 4, '17-05-
 INSERT INTO Eventos VALUES (2, 13, '17-05-12 22:10:00', 25,'abierto', 4, '17-05-13 01:00:00', 10, 60, 0, 2); #civil war en Plaza elíptica
 
 
-INSERT INTO Eventos VALUES (3, 1, '18-05-12 16:00:00', 100,'abierto', 50, '18-05-12 20:00:00', 5, 20, 50, 15); #Joaquin
-INSERT INTO Eventos VALUES (3, 2, '18-05-15 18:00:00', 100,'abierto', 20, '18-05-15 22:00:00', 5, 20, 50, 15); #Joaquin
-INSERT INTO Eventos VALUES (3, 5, '18-05-18 16:00:00', 70,'abierto', 5, '18-05-18 20:00:00', 5, 20, 50, 15); #Joaquin
-INSERT INTO Eventos VALUES (3, 8, '18-05-21 22:00:00', 50,'abierto', 15, '18-05-21 02:00:00', 5, 20, 50, 15); #Joaquin
+INSERT INTO Eventos VALUES (3, 1, '18-05-12 16:00:00', 100,'abierto', 10, '18-05-12 20:00:00', 5, 20, 130, 30); #Joaquin
+INSERT INTO Eventos VALUES (3, 2, '18-05-15 18:00:00', 100,'abierto', 5, '18-05-15 22:00:00', 5, 20, 130, 30); #Joaquin
+INSERT INTO Eventos VALUES (3, 5, '18-05-18 16:00:00', 70,'abierto', 5, '18-05-18 20:00:00', 5, 20, 130, 30); #Joaquin
+INSERT INTO Eventos VALUES (3, 8, '18-05-21 22:00:00', 50,'abierto', 15, '18-05-21 02:00:00', 5, 20, 130, 30); #Joaquin
 
-INSERT INTO Eventos VALUES (4, 4, '20-05-12 16:00:00', 1000,'abierto', 50, '20-05-10 18:00:00', 3, 240, 60, 30); #Alex ubago
-INSERT INTO Eventos VALUES (5, 5, '20-06-12 16:00:00', 700,'abierto', 50, '20-06-10 18:00:00', 3, 240, 60, 30); #Alex Ubago
-INSERT INTO Eventos VALUES (4, 4, '20-07-12 16:00:00', 1000,'abierto', 50, '20-07-10 18:00:00', 3, 240, 60, 30); #Alex ubago
-INSERT INTO Eventos VALUES (5, 5, '20-08-12 16:00:00', 700,'abierto', 50, '20-08-10 18:00:00', 3, 240, 60, 30); #Alex Ubago
-INSERT INTO Eventos VALUES (4, 4, '20-09-12 16:00:00', 1000,'abierto', 50, '20-09-10 18:00:00', 3, 240, 60, 30); #Alex ubago
-INSERT INTO Eventos VALUES (5, 5, '20-10-12 16:00:00', 700,'abierto', 50, '20-10-10 18:00:00', 3, 240, 60, 30); #Alex Ubago
+INSERT INTO Eventos VALUES (4, 4, '20-05-12 16:00:00', 80,'abierto', 50, '20-05-10 18:00:00', 3, 240, 60, 30); #Alex ubago
+INSERT INTO Eventos VALUES (5, 5, '20-06-12 16:00:00', 70,'abierto', 50, '20-06-10 18:00:00', 3, 240, 60, 30); #Alex Ubago
+INSERT INTO Eventos VALUES (4, 4, '20-07-12 16:00:00', 80,'abierto', 50, '20-07-10 18:00:00', 3, 240, 60, 30); #Alex ubago
+INSERT INTO Eventos VALUES (5, 5, '20-08-12 16:00:00', 70,'abierto', 50, '20-08-10 18:00:00', 3, 240, 60, 30); #Alex Ubago
+INSERT INTO Eventos VALUES (4, 4, '20-09-12 16:00:00', 80,'abierto', 50, '20-09-10 18:00:00', 3, 240, 60, 30); #Alex ubago
+INSERT INTO Eventos VALUES (5, 5, '20-10-12 16:00:00', 70,'abierto', 50, '20-10-10 18:00:00', 3, 240, 60, 30); #Alex Ubago
 
-INSERT INTO Eventos VALUES (6, 15, '21-05-12 16:00:00', 300,'cerrado', 50, '21-05-12 19:00:00', 5, 60, 50, 10); #Depor-Barça
-INSERT INTO Eventos VALUES (6, 15, '21-11-20 18:00:00', 300,'abierto', 50, '21-11-20 21:00:00', 5, 60, 50, 10); #Depor-Barça
+INSERT INTO Eventos VALUES (6, 15, '21-05-12 16:00:00', 95,'cerrado', 50, '21-05-12 19:00:00', 5, 60, 50, 10); #Depor-Barça
+INSERT INTO Eventos VALUES (6, 15, '21-11-20 18:00:00', 95,'abierto', 50, '21-11-20 21:00:00', 5, 60, 50, 10); #Depor-Barça
 
-INSERT INTO Eventos VALUES (7, 7, '22-05-12 16:00:00', 250,'abierto', 20 '22-05-12 20:00:00', 5, 120, 50, 30); #El rey Leon
-INSERT INTO Eventos VALUES (7, 7, '22-05-13 16:00:00', 250,'abierto', 20 '22-05-13 20:00:00', 5, 120, 50, 30); #El rey Leon
-INSERT INTO Eventos VALUES (7, 7, '22-05-15 16:00:00', 250,'abierto', 20 '22-05-15 20:00:00', 5, 120, 50, 30); #El rey Leon
-INSERT INTO Eventos VALUES (7, 7, '22-06-01 16:00:00', 250,'abierto', 20 '22-06-01 20:00:00', 5, 120, 50, 30); #El rey Leon
-INSERT INTO Eventos VALUES (7, 7, '22-06-03 16:00:00', 250,'abierto', 20 '22-06-03 20:00:00', 5, 120, 50, 30); #El rey Leon
-INSERT INTO Eventos VALUES (7, 7, '22-06-06 16:00:00', 250,'abierto', 20 '22-06-06 20:00:00', 5, 120, 50, 30); #El rey Leon
+INSERT INTO Eventos VALUES (7, 7, '22-05-12 16:00:00', 100,'abierto', 20 '22-05-12 20:00:00', 5, 120, 50, 30); #El rey Leon
+INSERT INTO Eventos VALUES (7, 7, '22-05-13 16:00:00', 100,'abierto', 20 '22-05-13 20:00:00', 5, 120, 50, 30); #El rey Leon
+INSERT INTO Eventos VALUES (7, 7, '22-05-15 16:00:00', 100,'abierto', 20 '22-05-15 20:00:00', 5, 120, 50, 30); #El rey Leon
+INSERT INTO Eventos VALUES (7, 7, '22-06-01 16:00:00', 100,'abierto', 20 '22-06-01 20:00:00', 5, 120, 50, 30); #El rey Leon
+INSERT INTO Eventos VALUES (7, 7, '22-06-03 16:00:00', 100,'abierto', 20 '22-06-03 20:00:00', 5, 120, 50, 30); #El rey Leon
+INSERT INTO Eventos VALUES (7, 7, '22-06-06 16:00:00', 100,'abierto', 20 '22-06-06 20:00:00', 5, 120, 50, 30); #El rey Leon
 
 /*
 INSERT INTO Eventos VALUES (8, 11, '22-05-12 16:00:00', 100,'abierto', 50, '22-05-12 18:00:00', 5, 20, 50, 10); #Dumbo 1
@@ -845,6 +844,7 @@ INSERT INTO Reservas_Prereservas VALUES (1, 2, 2, 2, '17-05-10 18:00:00', '45213
 INSERT INTO Reservas_Prereservas VALUES (3, 2, 2, 2, '17-05-10 18:00:00', '45213658R', NULL, "Infantil");
 INSERT INTO Reservas_Prereservas VALUES (1, 3, 3, 3, '18-05-12 16:00:00', '78941235E', NULL, "Parado");
 INSERT INTO Reservas_Prereservas VALUES (3, 3, 3, 3, '18-05-12 16:00:00', '48210368I', NULL, "Jubilado");
+
 
 
 /******************************************************************************************************************************************************************/
