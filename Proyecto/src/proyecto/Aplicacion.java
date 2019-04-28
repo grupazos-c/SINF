@@ -54,14 +54,14 @@ public class Aplicacion {
 	/**
 	 * Resgitro de Cliente en la BD
 	 * 
-	 * @return 0: Query OK -1: DNI existente -2: Formato de DNI incorrecto -3:
+	 * @return 0: Query OK -1: DNI existente -2: Usuario menor de edad -3: Formato de DNI incorrecto -4:
 	 *         Formato de IBAN incorrecto -87: SQLEXception
 	 */
 	public static int registrarCliente(String dni, String nombre, String iban, String nacimiento) {
 		if (dni.length() != 9) {
-			return -2;
-		} else if (iban.length() != 26) {
 			return -3;
+		} else if (iban.length() != 26) {
+			return -4;
 		}
 
 		try {
@@ -137,16 +137,13 @@ public class Aplicacion {
 	 * 
 	 * @return 0: Query OK -1: La localidad no está reservada ni pre-reservada -2:
 	 *         Este cliente no es quien ha reservado la localidad -3: Formato de DNI
-	 *         incorrecto -4: Formato de fecha incorrecto -87: SQLEXception
+	 *         incorrecto -87: SQLEXception
 	 */
 	public static int anularReserva(int id_localidad, int id_grada, int id_recinto, int id_espectaculo, String fecha,
 			String dni) {
 		if (dni.length() != 9) {
 			return -3;
-		} else if (fecha.length() != 26) {
-			return -4;
 		}
-
 		try {
 			init();
 
@@ -309,8 +306,8 @@ public class Aplicacion {
 
 				while (rs2.next()) {
 					Grada grada = new Grada(evento, rs2.getString("nombre_grada"), rs2.getInt("id_grada"),
-							rs2.getInt("maximo_adulto"), rs2.getInt("maximo_infantil"), rs2.getInt("maximo_parado"),
-							rs2.getInt("maximo_jubilado"), rs2.getInt("maximo_bebe"), rs2.getInt("precio_adulto"),
+							rs2.getInt("localidades_adulto"), rs2.getInt("localidades_infantil"), rs2.getInt("localidades_parado"),
+							rs2.getInt("localidades_jubilado"), rs2.getInt("localidades_bebe"), rs2.getInt("precio_adulto"),
 							rs2.getInt("precio_infantil"), rs2.getInt("precio_parado"), rs2.getInt("precio_jubilado"),
 							rs2.getInt("precio_bebe"));
 					gradas.add(grada);
@@ -326,8 +323,8 @@ public class Aplicacion {
 			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
 			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
 			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
 //			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
 //			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
 //			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
@@ -382,7 +379,7 @@ public class Aplicacion {
 		 * Resgitro de Cliente en la BD
 		 *
 		 * @return 	  0: 	Query OK
-		 * 			     -1:	DNI existente
+		 * 			     -1:	DNI inexistente
 		 * 			     -2: Formato de DNI incorrecto
 		 * 			     -3: Formato de IBAN incorrecto
 		 * 		    	-87: SQLEXception
@@ -416,6 +413,36 @@ public class Aplicacion {
 				return -87;
 			}
 		}
+	  
+	  public static ArrayList<Entrada> obtenerEntradasCliente(String dni){
+		  ArrayList<Entrada> entradas = new ArrayList<Entrada>();
+		  try {
+				init();
+
+				String SQLProcedure = "{call obtenerEntradasCompradasCliente(?)}";
+				CallableStatement cstmt = conn.prepareCall(SQLProcedure);
+				cstmt.setString(1, dni);
+				
+				ResultSet rs = cstmt.executeQuery();
+				
+				while(rs.next()) {
+					Evento evento = new Evento(rs.getInt("id_espectaculo"), rs.getString("nombre_espectaculo"), rs.getInt("id_recinto"), rs.getString("nombre_recinto"), rs.getString("fecha"));
+					Entrada entrada = new Entrada(evento, rs.getInt("id_localidad"), rs.getInt("id_grada"), rs.getString("tipo_usuario"), rs.getInt("precio"), rs.getString("nombre_grada"));
+					entradas.add(entrada);
+				}
+				close();
+				return entradas;
+			} catch (SQLException e) {
+				e.printStackTrace();
+//				TODO
+				entradas.add(new Entrada(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"), 12, 1, "Adulto", 7, "Tribuna pobre"));
+				entradas.add(new Entrada(new Evento(1, "Espectaculo bueno", 1, "En un museo", "15-05-19 17:00:00"), 12, 1, "Adulto", 100, "Tribuna"));
+				entradas.add(new Entrada(new Evento(1, "Espectaculo normalillo", 1, "En un museo", "15-05-19 17:00:00"), 12, 1, "Adulto", 25, "Tribuna normalilla"));
+				entradas.add(new Entrada(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"), 12, 1, "Adulto", 25, "Tribuna pobre"));
+				entradas.add(new Entrada(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"), 12, 1, "Adulto", 25, "Tribuna pobre"));
+				return entradas;
+			}
+	  }
 
 
 }
