@@ -340,6 +340,10 @@ INSERT INTO Gradas VALUES (4, 3, 8, '18-05-21 22:00:00', 'Grada', 250, 0, 20, 0,
 INSERT INTO Gradas VALUES (5, 3, 8, '18-05-21 22:00:00', 'Grada', 250, 0, 20, 0, 0, 10, 0, 250, 0, 0, 0);
 
 
+INSERT INTO Gradas VALUES (1, 6, 15, '21-05-12 16:00:00', 'Grada', 50, 20, 100, 30, 10, 5, 20, 100, 30, 10, 5); #Depor-Barça
+INSERT INTO Gradas VALUES (2, 6, 15, '21-05-12 16:00:00', 'Grada', 30, 20, 100, 30, 10, 5, 20, 100, 30, 10, 5);
+INSERT INTO Gradas VALUES (3, 6, 15, '21-05-12 16:00:00', 'Grada', 20, 20, 100, 30, 10, 5, 20, 100, 30, 10, 5);
+
 
 INSERT INTO Localidades VALUES (1, 1, 2, 11, '17-05-10 18:00:00','libre'); #Localidades para grada 1 civil war en Yelmo
 INSERT INTO Localidades VALUES (2, 1, 2, 11, '17-05-10 18:00:00','libre');
@@ -717,45 +721,112 @@ INSERT INTO Localidades VALUES (7, 4, 3, 2, '18-05-15 18:00:00','libre');
 INSERT INTO Localidades VALUES (8, 4, 3, 2, '18-05-15 18:00:00','libre');
 INSERT INTO Localidades VALUES (9, 4, 3, 2, '18-05-15 18:00:00','libre');
 INSERT INTO Localidades VALUES (10, 4, 3, 2, '18-05-15 18:00:00','libre'
-/*
-INSERT INTO Gradas VALUES (null, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (null, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (null, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (null, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (null, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (null, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (null, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (null, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (null, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (null, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 
 
+INSERT INTO Localidades VALUES (1, 1, 6, 15, '21-05-12 16:00:00','libre'); Depor-Barça
+INSERT INTO Localidades VALUES (2, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (3, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (4, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (5, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (6, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (7, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (8, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (9, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (10, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (11, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (12, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (13, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (14, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (15, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (16, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (17, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (18, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (19, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (20, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (21, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (22, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (23, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (24, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (25, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (26, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (27, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (28, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (29, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (30, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (31, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (32, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (33, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (34, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (35, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (36, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (37, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (38, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (39, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (40, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (41, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (42, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (43, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (44, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (45, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (46, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (47, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (48, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (49, 1, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (50, 1, 6, 15, '21-05-12 16:00:00','libre');
 
 
+INSERT INTO Localidades VALUES (1, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (2, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (3, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (4, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (5, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (6, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (7, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (8, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (9, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (10, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (11, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (12, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (13, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (14, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (15, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (16, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (17, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (18, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (19, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (20, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (21, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (22, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (23, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (24, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (25, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (26, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (27, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (28, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (29, 2, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (30, 2, 6, 15, '21-05-12 16:00:00','libre');
 
-INSERT INTO Gradas VALUES (1, 2, 2, '17-05-10 18:00:00', 'Grada', 5, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (1, 3, 3, '18-05-12 16:00:00', 'Grada', 70, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (1, 4, 4, '19-05-12 16:00:00', 'Grada', 12, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (1, 5, 5, '20-05-12 16:00:00', 'Grada', 50, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (1, 6, 6, '21-05-12 16:00:00', 'Grada', 80, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (1, 7, 7, '22-05-12 16:00:00', 'Grada', 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 
-INSERT INTO Gradas VALUES (2, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (2, 2, 2, '17-05-10 18:00:00', 'Grada', 5, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (2, 3, 3, '18-05-12 16:00:00', 'Grada', 70, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (2, 4, 4, '19-05-12 16:00:00', 'Grada', 12, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (2, 5, 5, '20-05-12 16:00:00', 'Grada', 50, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (2, 6, 6, '21-05-12 16:00:00', 'Grada', 80, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (2, 7, 7, '22-05-12 16:00:00', 'Grada', 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-
-INSERT INTO Gradas VALUES (3, 1, 1, '16-05-12 16:00:00', 'Grada', 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (3, 2, 2, '17-05-10 18:00:00', 'Grada', 5, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (3, 3, 3, '18-05-12 16:00:00', 'Grada', 70, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (3, 4, 4, '19-05-12 16:00:00', 'Grada', 12, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (3, 5, 5, '20-05-12 16:00:00', 'Grada', 50, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (3, 6, 6, '21-05-12 16:00:00', 'Grada', 80, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-INSERT INTO Gradas VALUES (3, 7, 7, '22-05-12 16:00:00', 'Grada', 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-*/
+INSERT INTO Localidades VALUES (1, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (2, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (3, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (4, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (5, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (6, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (7, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (8, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (9, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (10, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (11, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (12, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (13, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (14, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (15, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (16, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (17, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (18, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (19, 3, 6, 15, '21-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (20, 3, 6, 15, '21-05-12 16:00:00','libre');
 
 
 insert into Clientes VALUES ('32654125D', 'Manolo Lopez Lopez', 'ES407050654851239650402325','1998-05-12');
@@ -768,13 +839,13 @@ insert into Clientes VALUES ('45012317R', 'Roi Martínez Portela', 'ES7878421356
 insert into Clientes VALUES ('77712358Y', 'Sergio Arcay Mallo', 'ES456123365478965231569852','1999-05-02');
 
 
-
 INSERT INTO Reservas_Prereservas VALUES (1, 1, 1, 1, '16-05-12 16:00:00', '32654125D', NULL, 'Adulto');
 INSERT INTO Reservas_Prereservas VALUES (3, 1, 1, 1, '16-05-12 16:00:00', '32654125D', NULL, 'Infantil');
 INSERT INTO Reservas_Prereservas VALUES (1, 2, 2, 2, '17-05-10 18:00:00', '45213658R', NULL, "Infantil");
 INSERT INTO Reservas_Prereservas VALUES (3, 2, 2, 2, '17-05-10 18:00:00', '45213658R', NULL, "Infantil");
 INSERT INTO Reservas_Prereservas VALUES (1, 3, 3, 3, '18-05-12 16:00:00', '78941235E', NULL, "Parado");
 INSERT INTO Reservas_Prereservas VALUES (3, 3, 3, 3, '18-05-12 16:00:00', '48210368I', NULL, "Jubilado");
+
 
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
