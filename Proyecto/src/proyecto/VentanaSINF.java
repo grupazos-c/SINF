@@ -11,7 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.time.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.imageio.ImageIO;
@@ -46,6 +48,10 @@ public class VentanaSINF extends JFrame {
 	 */
 	JPanel panelLogo, panelLogin, panelBusqueda, panelPrincipal, panelEventos, panelGradas, panelEntradas;
 	private JPanel contentPane;
+
+	JComboBox<String> participantes;
+	JComboBox<String> espectaculos;
+	JComboBox<String> recintos;
 
 	/**
 	 * consturctor que inicializa nuestra ventana
@@ -144,9 +150,9 @@ public class VentanaSINF extends JFrame {
 		JCheckBox ParadoJCB = new JCheckBox("Parado", true);
 		JCheckBox JubiladoJCB = new JCheckBox("Jubilado", true);
 		JCheckBox BebeJCB = new JCheckBox("Bebé", true);
-		JComboBox<String> participantes = new JComboBox<String>();
-		JComboBox<String> espectaculos = new JComboBox<String>();
-		JComboBox<String> recintos = new JComboBox<String>();
+		participantes = new JComboBox<String>();
+		espectaculos = new JComboBox<String>();
+		recintos = new JComboBox<String>();
 		JLabel PrecioJL = new JLabel("Precio máximo:");
 		JSlider PrecioJS = new JSlider(0, 50, 50);
 		JLabel FminJL = new JLabel("Desde:");
@@ -186,9 +192,7 @@ public class VentanaSINF extends JFrame {
 		horamax.setMaximumSize(new Dimension(250, 25));
 
 		// TODO de prueba
-		participantes.addItem(" - Participantes - ");
-		espectaculos.addItem(" - Espectáculos - ");
-		recintos.addItem(" - Recintos - ");
+		refresh();		
 
 		panelBusqueda.add(BuscarJB);
 		panelBusqueda.add(Box.createRigidArea(new Dimension(1, 10)));
@@ -328,6 +332,7 @@ public class VentanaSINF extends JFrame {
 				} else if (e.getSource() == MisDatosJB) {
 					misDatos();
 				} else if (e.getSource() == BuscarJB) {
+					refresh();
 					String fechamins = null;
 					String fechamaxs = null;
 					try {
@@ -349,6 +354,26 @@ public class VentanaSINF extends JFrame {
 		BuscarJB.addActionListener(al);
 		MisDatosJB.addActionListener(al);
 		MisEntradasJB.addActionListener(al);
+	}
+
+	private void refresh() {
+		ArrayList<String> array = new ArrayList<>();
+		array = Aplicacion.obtenerParticipantes();
+		participantes.addItem(" - Participantes - ");
+		for (String string : array) {
+			participantes.addItem(string);			
+		}
+		array = Aplicacion.obtenerEspectaculos();
+		espectaculos.addItem(" - Espectáculos - ");
+		for (String string : array) {
+			espectaculos.addItem(string);			
+		}
+		array = Aplicacion.obtenerRecintos();
+		recintos.addItem(" - Recintos - ");
+		for (String string : array) {
+			espectaculos.addItem(string);			
+		}
+		
 	}
 
 	/**
@@ -622,6 +647,7 @@ public class VentanaSINF extends JFrame {
 	}
 
 	private void fillGradas(ArrayList<Grada> gradas) {
+		HashMap<Entrada, JComboBox<Integer>> cantidades = new HashMap<>();
 		panelGradas.removeAll();
 		panelGradas.add(new JLabel("Gradas"));
 		panelGradas.add(new JLabel("Adulto"));
@@ -645,6 +671,7 @@ public class VentanaSINF extends JFrame {
 			}
 			cajaAdulto.add(new JLabel(" " + String.valueOf(grada.getPrecioAdulto())));
 			panelGradas.add(cajaAdulto);
+			cantidades.put(new Entrada(grada.getEvento(), 0, grada.getId_grada(), "Adulto", grada.getPrecioAdulto(), grada.getNombre()), cantidadAdulto);
 
 			JComboBox<Integer> cantidadInfantil = new JComboBox<Integer>();
 			cantidadInfantil.setMaximumSize(new Dimension(50, 25));
@@ -654,6 +681,7 @@ public class VentanaSINF extends JFrame {
 			}
 			cajaInfantil.add(new JLabel(" " + String.valueOf(grada.getPrecioInfantil())));
 			panelGradas.add(cajaInfantil);
+			cantidades.put(new Entrada(grada.getEvento(), 0, grada.getId_grada(), "Infantil", grada.getPrecioInfantil(), grada.getNombre()), cantidadInfantil);
 
 			JComboBox<Integer> cantidadJubilado = new JComboBox<Integer>();
 			cantidadJubilado.setMaximumSize(new Dimension(50, 25));
@@ -663,6 +691,7 @@ public class VentanaSINF extends JFrame {
 			}
 			cajaJubilado.add(new JLabel(" " + String.valueOf(grada.getPrecioJubilado())));
 			panelGradas.add(cajaJubilado);
+			cantidades.put(new Entrada(grada.getEvento(), 0, grada.getId_grada(), "Jubilado", grada.getPrecioJubilado(), grada.getNombre()), cantidadJubilado);
 
 			JComboBox<Integer> cantidadParado = new JComboBox<Integer>();
 			cantidadParado.setMaximumSize(new Dimension(50, 25));
@@ -672,6 +701,7 @@ public class VentanaSINF extends JFrame {
 			}
 			cajaParado.add(new JLabel(" " + String.valueOf(grada.getPrecioParado())));
 			panelGradas.add(cajaParado);
+			cantidades.put(new Entrada(grada.getEvento(), 0, grada.getId_grada(), "Parado", grada.getPrecioParado(), grada.getNombre()), cantidadParado);
 
 			JComboBox<Integer> cantidadBebe = new JComboBox<Integer>();
 			cantidadBebe.setMaximumSize(new Dimension(50, 25));
@@ -681,6 +711,7 @@ public class VentanaSINF extends JFrame {
 			}
 			cajaBebe.add(new JLabel(" " + String.valueOf(grada.getPrecioBebe())));
 			panelGradas.add(cajaBebe);
+			cantidades.put(new Entrada(grada.getEvento(), 0, grada.getId_grada(), "Bebe", grada.getPrecioBebe(), grada.getNombre()), cantidadBebe);
 		}
 
 		JButton volverJB = new JButton("Volver");
@@ -692,8 +723,28 @@ public class VentanaSINF extends JFrame {
 				cl.show(panelPrincipal, "Eventos");
 			}
 		});
-		JButton preReservaJB = new JButton("Pre-Reservar");// TODO
+		JButton preReservaJB = new JButton("Pre-Reservar");
+		preReservaJB.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(DNI.equals("0")) {
+					JOptionPane.showMessageDialog(null, "Debes registrarte para realizar esta acción");
+				}else {
+					reservarPreReservar(DNI ,"pre-reservar" ,cantidades );
+				}
+			}
+		});
 		JButton compraJB = new JButton("Comprar");
+		compraJB.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(DNI.equals("0")) {
+					JOptionPane.showMessageDialog(null, "Debes registrarte para realizar esta acción");
+				}else {
+					reservarPreReservar(DNI ,"reservar" ,cantidades );
+				}
+			}
+		});
 		preReservaJB.setMaximumSize(new Dimension(1000, 50));
 		compraJB.setMaximumSize(new Dimension(1000, 50));
 
@@ -712,19 +763,83 @@ public class VentanaSINF extends JFrame {
 		panelGradas.add(cajavcom);
 	}
 
+	protected void reservar(String dni, HashMap<Entrada, JComboBox<Integer>> cantidades) {
+				
+	}
+
+	protected void preReservar(String dni, HashMap<Entrada, JComboBox<Integer>> cantidades) {
+		
+	}
+	
+	protected void reservarPreReservar(String dni, String tipoTransaccion,  HashMap<Entrada, JComboBox<Integer>> cantidades) {
+		HashMap<Entrada, Integer> cantidadesint = new HashMap<>();
+		Set<Entrada> entradas =cantidades.keySet();
+		int cantTotal = 0;
+		Evento evento = null;
+		for (Entrada entrada : entradas) {
+			int cantidad = (int) cantidades.get(entrada).getSelectedItem();
+			cantidadesint.put(entrada, cantidad);
+			cantTotal += cantidad;
+			evento = entrada.getEvento();
+		}
+		int cantMaxima = Aplicacion.obtenerMaximoPreReservas(evento);
+		if (cantTotal > cantMaxima) {
+			JOptionPane.showMessageDialog(null, "No se puede Pre-Reservar más de " + cantMaxima + " entradas para este evento");
+		}
+		
+		int resultado = Aplicacion.reservarPreReservar(tipoTransaccion, dni, cantidadesint);
+		switch (resultado) {
+		case 0:
+			if(tipoTransaccion.equals("reservar")) {
+			JOptionPane.showMessageDialog(null, "Compra realizada satisfactoriamente");
+			}
+			break;
+		case -1:
+			JOptionPane.showMessageDialog(null, "Alguna localidad no está disponible");
+			break;
+		case -2:
+			JOptionPane.showMessageDialog(null, "Tipo de usuario incorrecto");
+			break;
+		case -3:
+			JOptionPane.showMessageDialog(null, "No se ofrecen entradas para este tipo de usuario");
+			break;
+		case -4:
+			JOptionPane.showMessageDialog(null, "No quedan más entradas disponibles para este tipo de usario");
+			break;
+		case -5:
+			JOptionPane.showMessageDialog(null, "No se pueden comprar tantas entradas para este evento");
+			break;
+		case -6:
+			JOptionPane.showMessageDialog(null, "Tipo de transacción incorrecto");
+			break;
+		case -7:
+			JOptionPane.showMessageDialog(null, "Formato de DNI incorrecto");
+			break;
+		case -8:
+			JOptionPane.showMessageDialog(null, "Formato de fecha incorrecto");
+			break;
+		case -9:
+			JOptionPane.showMessageDialog(null, "No se pueden conseguir entradas consecutivas");
+			break;
+		case -87:
+			JOptionPane.showMessageDialog(null, "SQLEXception");
+			break;
+
+		default:
+			JOptionPane.showMessageDialog(null, "Unexpected Error");
+			break;
+		}
+	}
+
 	protected void misDatos() {
 		Cliente cliente = Aplicacion.obtenerCliente(DNI);
-		JButton editarJB = new JButton("Editar");
-		editarJB.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				editarDatos(cliente);
-			}
-		});
 		Object[] message = { "DNI:" + DNI, "Nombre:" + cliente.getNombre(), "IBAN:" + cliente.getIban(),
-				"Fecha de Nacimiento:" + cliente.getFecha_nacimiento(), editarJB };
+				"Fecha de Nacimiento:" + cliente.getFecha_nacimiento(),Box.createRigidArea(new Dimension(1, 10)), "Desea editar sus datos personales?" };
 
-		JOptionPane.showConfirmDialog(null, message, "Datos personales", JOptionPane.CLOSED_OPTION);
+		int resultado = JOptionPane.showConfirmDialog(null, message, "Datos personales", JOptionPane.YES_NO_OPTION);
+		if(resultado == JOptionPane.YES_OPTION) {
+			editarDatos(cliente);
+		}
 	}
 
 	protected void editarDatos(Cliente cliente) {

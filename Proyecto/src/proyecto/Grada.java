@@ -123,8 +123,4 @@ public class Grada extends Evento{
 	public int getPrecioBebe() {
 		return precioBebe;
 	}
-	
-	
-	
-	
 }

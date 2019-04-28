@@ -22,6 +22,10 @@ public class Evento {
 		this.recinto = recinto;
 		this.fecha = fecha;
 	}
+	
+	public Evento getEvento() {
+		return this;
+	}
 
 	/**
 	 * @return the id_espectaculo
