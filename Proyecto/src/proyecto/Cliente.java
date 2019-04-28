@@ -224,7 +224,6 @@ public class Cliente {
 	 * @param bebe 
 	 * @param infantil 
 	 */
-	
 	public static ArrayList<Evento> filtrarEventos(String espectaculo, String recinto, String fechamax, String fechamin,
 			String participante, int precio_max, boolean jubilado, boolean adulto, boolean parado, boolean bebe,
 			boolean infantil) {
@@ -261,7 +260,55 @@ public class Cliente {
 			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
 			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
 			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
 			return eventos; //TODO borrar prueba
+		}
+	}
+
+	public static ArrayList<Grada> buscarGradas(Evento evento) {
+		ArrayList<Grada> gradas = new ArrayList<Grada>();
+		ArrayList<Integer> id_gradas = new ArrayList<Integer>();
+		try {
+			init();
+
+			String SQLProcedure = "{call muestraGradas(?,?,?)}"; 	//Primero bucamos cuantas gradas iteraremos
+			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
+			cstmt.setInt(1, evento.getId_espectaculo());
+			cstmt.setInt(2, evento.getId_recinto());
+			cstmt.setString(3, evento.getFecha());
+
+			ResultSet rs = cstmt.executeQuery();
+			
+			while (rs.next()) {
+				int id_grada = rs.getInt(1);
+				id_gradas.add(id_grada);
+			}
+
+			close();
+			return gradas;
+		} catch (Exception e) { //TODO solo SQL exception
+			e.printStackTrace();
+			return null;
 		}
 	}
 	
