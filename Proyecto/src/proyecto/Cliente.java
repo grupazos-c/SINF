@@ -306,7 +306,7 @@ public class Cliente {
 
 			close();
 			return gradas;
-		} catch (Exception e) { //TODO solo SQL exception
+		} catch (Exception e) { //TODO solo SQL exception 
 			e.printStackTrace();
 			return null;
 		}
