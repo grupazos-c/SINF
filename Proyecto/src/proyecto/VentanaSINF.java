@@ -296,7 +296,7 @@ public class VentanaSINF extends JFrame {
 
 		/***********************************
 		 * Action Listener
-		 ***********************************/
+		 ***********************************/   //TODO
 		ActionListener al = new ActionListener() {
 
 			@Override
@@ -307,9 +307,14 @@ public class VentanaSINF extends JFrame {
 				} else if (e.getSource() == LogedJB) {
 					CardLayout cl = (CardLayout) (panelLogin.getLayout());
 					cl.next(panelLogin);
+					DNI = "0";
 				} else if (e.getSource() == RegistrarJB) {
 					registro();
 					UsuarioJL.setText(DNI);
+				} else if (e.getSource() == MisEntradasJB) {
+					
+				} else if (e.getSource() == MisDatosJB) {
+					misDatos();
 				} else if (e.getSource() == BuscarJB) {
 					String fechamins = null;
 					String fechamaxs = null;
@@ -330,6 +335,8 @@ public class VentanaSINF extends JFrame {
 		LogedJB.addActionListener(al);
 		RegistrarJB.addActionListener(al);
 		BuscarJB.addActionListener(al);
+		MisDatosJB.addActionListener(al);
+		MisEntradasJB.addActionListener(al);
 	}
 
 	/**
@@ -442,7 +449,17 @@ public class VentanaSINF extends JFrame {
 		return caja;
 	}
 
-	private Box seleccionarFechaNac() {
+	private Box seleccionarFechaNac(String fechaPredet) {
+		//año-mes-dia
+		String[] fecha = null;
+		try {
+			fecha = fechaPredet.split("-");
+		} catch (NullPointerException e) {
+			fecha[0] = " - Año - ";
+			fecha[1] = " - Mes - ";
+			fecha[2] = " - Día - ";
+		}
+		
 		Box caja = new Box(BoxLayout.X_AXIS);
 
 		JComboBox<String> dia = new JComboBox<String>();
@@ -462,6 +479,10 @@ public class VentanaSINF extends JFrame {
 		for (int i = 2019; i >= 1900; i--) {
 			anho.addItem(String.valueOf(i));
 		}
+		
+		anho.setSelectedItem(fecha[2]);
+		mes.setSelectedItem(fecha[1]);
+		dia.setSelectedItem(fecha[0]);
 
 		caja.add(dia);
 		caja.add(mes);
@@ -491,7 +512,7 @@ public class VentanaSINF extends JFrame {
 		JTextField username = new JTextField();
 		JTextField dni = new JTextField();
 		JTextField iban = new JTextField();
-		Box fechaNac = seleccionarFechaNac();
+		Box fechaNac = seleccionarFechaNac(null);
 		Object[] message = { "DNI:", dni, "Nombre:", username, "IBAN:", iban, "Fecha de Nacimiento:", fechaNac };
 
 		int option = JOptionPane.showConfirmDialog(null, message, "Registro", JOptionPane.OK_CANCEL_OPTION);
@@ -597,6 +618,7 @@ public class VentanaSINF extends JFrame {
 			Box cajaBebe = new Box(BoxLayout.X_AXIS);
 			
 			JComboBox<Integer> cantidadAdulto = new  JComboBox<Integer>();
+			cantidadAdulto.setMaximumSize(new Dimension(50, 25));
 			cajaAdulto.add(cantidadAdulto);
 			for (int i = 0; i <= grada.getMaxAdulto(); i++) {
 				cantidadAdulto.addItem(i);
@@ -605,6 +627,7 @@ public class VentanaSINF extends JFrame {
 			panelGradas.add(cajaAdulto);
 			
 			JComboBox<Integer> cantidadInfantil = new  JComboBox<Integer>();
+			cantidadInfantil.setMaximumSize(new Dimension(50, 25));
 			cajaInfantil.add(cantidadInfantil);
 			for (int i = 0; i <= grada.getMaxInfantil(); i++) {
 				cantidadInfantil.addItem(i);
@@ -613,6 +636,7 @@ public class VentanaSINF extends JFrame {
 			panelGradas.add(cajaInfantil);
 			
 			JComboBox<Integer> cantidadJubilado = new  JComboBox<Integer>();
+			cantidadJubilado.setMaximumSize(new Dimension(50, 25));
 			cajaJubilado.add(cantidadJubilado);
 			for (int i = 0; i <= grada.getMaxJubilado(); i++) {
 				cantidadJubilado.addItem(i);
@@ -621,6 +645,7 @@ public class VentanaSINF extends JFrame {
 			panelGradas.add(cajaJubilado);
 			
 			JComboBox<Integer> cantidadParado = new  JComboBox<Integer>();
+			cantidadParado.setMaximumSize(new Dimension(50, 25));
 			cajaParado.add(cantidadParado);
 			for (int i = 0; i <= grada.getMaxParado(); i++) {
 				cantidadParado.addItem(i);
@@ -629,13 +654,15 @@ public class VentanaSINF extends JFrame {
 			panelGradas.add(cajaParado);
 			
 			JComboBox<Integer> cantidadBebe = new  JComboBox<Integer>();
+			cantidadBebe.setMaximumSize(new Dimension(50, 25));
 			cajaBebe.add(cantidadBebe);
 			for (int i = 0; i <= grada.getMaxBebe(); i++) {
 				cantidadBebe.addItem(i);
 			}
 			cajaBebe.add(new JLabel(" " + String.valueOf(grada.getPrecioBebe())));
 			panelGradas.add(cajaBebe);
-		}
+					}
+
 		
 		JButton volverJB = new JButton("Volver");
 		volverJB.addActionListener(new ActionListener() {
@@ -645,12 +672,55 @@ public class VentanaSINF extends JFrame {
 				cl.show(panelPrincipal, "Eventos");
 			}
 		});
-		JButton preReservaJB = new JButton("Pre-Reservar");
+		JButton preReservaJB = new JButton("Pre-Reservar");//TODO
 		JButton compraJB = new JButton("Comprar");
 		
 		panelGradas.add(volverJB);
+		panelGradas.add(new Box(0));
+		panelGradas.add(new Box(0));	
+		panelGradas.add(new Box(0));	
 		panelGradas.add(preReservaJB);
 		panelGradas.add(compraJB);
+	}
+	
+	protected void misDatos() {
+		Cliente cliente = Aplicacion.obtenerCliente(DNI);
+		JButton editarJB = new JButton("Editar");
+		editarJB.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				editarDatos(cliente);
+			}
+		});
+		Object[] message = { "DNI:" + DNI, "Nombre:" + cliente.getNombre(), "IBAN:" + cliente.getIban(), "Fecha de Nacimiento:" + cliente.getFecha_nacimiento(), editarJB};
+
+		JOptionPane.showConfirmDialog(null, message, "Datos personales" , JOptionPane.CLOSED_OPTION);		
+	}
+
+	protected void editarDatos(Cliente cliente) {
+		JTextField nombreJT = new JTextField(cliente.getNombre());
+		JTextField ibanJT = new JTextField(cliente.getIban());
+		Box fechavox = seleccionarFechaNac(cliente.getFecha_nacimiento());
+		Object[] message = { "DNI: " + DNI, "Nombre: ", nombreJT, "IBAN: ", ibanJT,
+				"Fecha de Nacimiento: ", fechavox };
+
+		int option = JOptionPane.showConfirmDialog(null, message, "Datos personales", JOptionPane.OK_OPTION);
+		if (option == JOptionPane.OK_OPTION) {
+			String nombre = nombreJT.getText();
+			String iban = ibanJT.getText();
+			if (nombre.length() > 30) {
+				JOptionPane.showMessageDialog(null, "Nombre demasiado Grande");
+			} else if (iban.length() != 26) {
+				JOptionPane.showMessageDialog(null, "formato de IBAN incorrecto");
+			} else {
+				try {
+					String fechanac = fechaNac2String(obtenerFechaHora(fechavox, null));
+					Aplicacion.modificarCliente(DNI, nombre, iban, fechanac);
+				} catch (NullPointerException e) {
+					Aplicacion.modificarCliente(DNI, nombre, iban, cliente.getFecha_nacimiento());
+				}
+			}
+		}
 	}
 
 	private String fechaNac2String(LocalDateTime fechahora) {
