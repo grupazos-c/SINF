@@ -221,7 +221,9 @@ public class VentanaSINF extends JFrame {
 		panelBusqueda.add(Box.createRigidArea(new Dimension(1, 5)));
 		panelBusqueda.add(horamax);
 
-		/** Panel Principal */
+		/** 
+		 * Panel Principal 
+		 */
 		panelPrincipal = new JPanel();
 		panelEventos = new JPanel();
 		panelGradas = new JPanel();
@@ -240,6 +242,8 @@ public class VentanaSINF extends JFrame {
         
 		panelEventos.setLayout(new BoxLayout(panelEventos, BoxLayout.Y_AXIS));
 		panelGradas.setLayout(new GridLayout(0, 6, 10, 10));
+		panelEventos.setBackground(colorprincipal);
+		panelGradas.setBackground(colorprincipal);
 		
 		panelPrincipal.add(panelEventos, "Eventos");
 		panelPrincipal.add(panelGradas, "Gradas");
@@ -288,7 +292,7 @@ public class VentanaSINF extends JFrame {
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(1, 1, 1, 1);
-		contentPane.add(scrollPane, gbc);
+		contentPane.add(panelPrincipal, gbc);
 
 		/***********************************
 		 * Action Listener
@@ -471,7 +475,7 @@ public class VentanaSINF extends JFrame {
 	 */
 	private void login() {
 		String dni = JOptionPane.showInputDialog(null, "Introduzca su DNI");
-		if (Cliente.existeDni(dni)) {
+		if (Aplicacion.existeDni(dni)) {
 			DNI = dni;
 			CardLayout cl = (CardLayout) (panelLogin.getLayout());
 			cl.next(panelLogin);
@@ -492,7 +496,7 @@ public class VentanaSINF extends JFrame {
 
 		int option = JOptionPane.showConfirmDialog(null, message, "Registro", JOptionPane.OK_CANCEL_OPTION);
 		if (option == JOptionPane.OK_OPTION) {
-			int resultadoRegistro = Cliente.registrarCliente(dni.getText(), username.getText(), iban.getText(),
+			int resultadoRegistro = Aplicacion.registrarCliente(dni.getText(), username.getText(), iban.getText(),
 					fechaNac2String(obtenerFechaHora(fechaNac, null)));
 			switch (resultadoRegistro) {
 			case 0:
@@ -539,7 +543,7 @@ public class VentanaSINF extends JFrame {
 	 * @param fechaMax
 	 */
 	private void buscar(boolean adulto, boolean infantil, boolean parado, boolean jubilado, boolean bebe, String participantes, String espectaculo, String recinto, int precioMax, String fechaMin, String fechaMax ) {
-		ArrayList<Evento> eventosFiltrados = Cliente.filtrarEventos(espectaculo, recinto, fechaMax, fechaMin, participantes, precioMax, jubilado, adulto, parado, infantil, bebe);
+		ArrayList<Evento> eventosFiltrados = Aplicacion.filtrarEventos(espectaculo, recinto, fechaMax, fechaMin, participantes, precioMax, jubilado, adulto, parado, infantil, bebe);
 		panelEventos.removeAll();
 		for (Evento evento : eventosFiltrados) {
 			JLabel texto = new JLabel(evento.toString());
@@ -548,6 +552,7 @@ public class VentanaSINF extends JFrame {
 			texto.addMouseListener(new MouseAdapter() {@Override
 			    public void mouseEntered(MouseEvent e) {
 					texto.setForeground(new Color(new Random().nextInt(16777215))); //XD
+//			    	texto.setForeground(Color.BLUE);
 					setCursor(new Cursor(Cursor.HAND_CURSOR));
 			    }
 			    @Override
@@ -560,14 +565,92 @@ public class VentanaSINF extends JFrame {
 			    	accederEvento(evento);
 		    	}
 				private void accederEvento(Evento evento) {
-					ArrayList<Grada> gradas = Cliente.buscarGradas(evento);
+					ArrayList<Grada> gradas = Aplicacion.buscarGradas(evento);
+					CardLayout cl = (CardLayout) panelPrincipal.getLayout();
+					cl.show(panelPrincipal, "Gradas");
+					fillGradas(gradas);
 				}
 			});
 			panelEventos.add(texto);
 			panelEventos.add(Box.createRigidArea(new Dimension(1, 10)));
 		}
-		 panelPrincipal.getLayout();
+		CardLayout cl = (CardLayout) panelPrincipal.getLayout();
+		cl.show(panelPrincipal, "Eventos");
 		panelEventos.updateUI();
+	}
+	
+
+	private void fillGradas(ArrayList<Grada> gradas) {
+		panelGradas.removeAll();
+		panelGradas.add(new JLabel("Gradas"));
+		panelGradas.add(new JLabel("Adulto"));
+		panelGradas.add(new JLabel("Infantil"));
+		panelGradas.add(new JLabel("Jubilado"));
+		panelGradas.add(new JLabel("Parado"));
+		panelGradas.add(new JLabel("Bebé"));
+		for (Grada grada : gradas) {
+			panelGradas.add(new JLabel(grada.getNombre()));
+			Box cajaAdulto = new Box(BoxLayout.X_AXIS);
+			Box cajaInfantil = new Box(BoxLayout.X_AXIS);
+			Box cajaJubilado = new Box(BoxLayout.X_AXIS);
+			Box cajaParado = new Box(BoxLayout.X_AXIS);
+			Box cajaBebe = new Box(BoxLayout.X_AXIS);
+			
+			JComboBox<Integer> cantidadAdulto = new  JComboBox<Integer>();
+			cajaAdulto.add(cantidadAdulto);
+			for (int i = 0; i <= grada.getMaxAdulto(); i++) {
+				cantidadAdulto.addItem(i);
+			}
+			cajaAdulto.add(new JLabel(" " + String.valueOf(grada.getPrecioAdulto())));
+			panelGradas.add(cajaAdulto);
+			
+			JComboBox<Integer> cantidadInfantil = new  JComboBox<Integer>();
+			cajaInfantil.add(cantidadInfantil);
+			for (int i = 0; i <= grada.getMaxInfantil(); i++) {
+				cantidadInfantil.addItem(i);
+			}
+			cajaInfantil.add(new JLabel(" " + String.valueOf(grada.getPrecioInfantil())));
+			panelGradas.add(cajaInfantil);
+			
+			JComboBox<Integer> cantidadJubilado = new  JComboBox<Integer>();
+			cajaJubilado.add(cantidadJubilado);
+			for (int i = 0; i <= grada.getMaxJubilado(); i++) {
+				cantidadJubilado.addItem(i);
+			}
+			cajaJubilado.add(new JLabel(" " + String.valueOf(grada.getPrecioJubilado())));
+			panelGradas.add(cajaJubilado);
+			
+			JComboBox<Integer> cantidadParado = new  JComboBox<Integer>();
+			cajaParado.add(cantidadParado);
+			for (int i = 0; i <= grada.getMaxParado(); i++) {
+				cantidadParado.addItem(i);
+			}
+			cajaParado.add(new JLabel(" " + String.valueOf(grada.getPrecioParado())));
+			panelGradas.add(cajaParado);
+			
+			JComboBox<Integer> cantidadBebe = new  JComboBox<Integer>();
+			cajaBebe.add(cantidadBebe);
+			for (int i = 0; i <= grada.getMaxBebe(); i++) {
+				cantidadBebe.addItem(i);
+			}
+			cajaBebe.add(new JLabel(" " + String.valueOf(grada.getPrecioBebe())));
+			panelGradas.add(cajaBebe);
+		}
+		
+		JButton volverJB = new JButton("Volver");
+		volverJB.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CardLayout cl = (CardLayout) panelPrincipal.getLayout();
+				cl.show(panelPrincipal, "Eventos");
+			}
+		});
+		JButton preReservaJB = new JButton("Pre-Reservar");
+		JButton compraJB = new JButton("Comprar");
+		
+		panelGradas.add(volverJB);
+		panelGradas.add(preReservaJB);
+		panelGradas.add(compraJB);
 	}
 
 	private String fechaNac2String(LocalDateTime fechahora) {
