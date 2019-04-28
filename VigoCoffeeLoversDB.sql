@@ -1,9 +1,3 @@
-/**
-*
-* -> El evento (diparador periodico) del procedure reservas-prereservas no fuciona
-*
-*/
-
 DROP DATABASE IF EXISTS VigoCoffeeLoversDB;
 CREATE DATABASE VigoCoffeeLoversDB;
 #GRANT ALL PRIVILEGES ON Proyecto.* TO 'cliente'@'localhost';
