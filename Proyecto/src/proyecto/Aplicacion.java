@@ -351,5 +351,69 @@ public class Aplicacion {
 			return gradas;
 		}
 	}
+	
+	public static Cliente obtenerCliente (String dni){		
+	    try {
+				init();
+
+				String SQLProcedure = "{call obtenerDatosCliente(?)}"; 	//Primero bucamos cuantas gradas iteraremos
+				CallableStatement cstmt = conn.prepareCall(SQLProcedure);
+				cstmt.setString(1, dni);
+
+				ResultSet rs = cstmt.executeQuery();
+				
+				rs.next();
+
+				Cliente cliente = new Cliente(dni,rs.getString("nombre"),rs.getString("nacimiento"),rs.getString("iban"));
+
+				close();
+				return cliente;
+			} catch (Exception e) { //TODO solo SQL exception
+				e.printStackTrace();
+				return null;
+			}
+
+	  }
+
+
+	  /**
+		 * Resgitro de Cliente en la BD
+		 *
+		 * @return 	  0: 	Query OK
+		 * 			     -1:	DNI existente
+		 * 			     -2: Formato de DNI incorrecto
+		 * 			     -3: Formato de IBAN incorrecto
+		 * 		    	-87: SQLEXception
+		 */
+	  public static int modificarCliente(String dni, String nombre, String iban, String nacimiento) {
+			if (dni.length() != 9) {
+				return -2;
+			} else if (iban.length() != 26) {
+				return -3;
+			}
+
+			try {
+				init();
+
+				String SQLProcedure = "{call modificarDatosCliente(?,?,?,?,?)}";
+				CallableStatement cstmt = conn.prepareCall(SQLProcedure);
+				cstmt.setString(1, dni);
+				cstmt.setString(2, nombre);
+				cstmt.setString(3, iban);
+				cstmt.setString(4, nacimiento);
+				cstmt.registerOutParameter(5, Types.INTEGER);
+				cstmt.executeUpdate();
+
+				int resultado = cstmt.getInt(5);
+				System.out.println("Resultado de la modificación: " + resultado);
+
+				close();
+				return resultado;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return -87;
+			}
+		}
+
 
 }
