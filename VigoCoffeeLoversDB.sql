@@ -266,6 +266,12 @@ drop PROCEDURE if exists obtenerEntradasCompradasCliente;
 drop PROCEDURE if exists obtenerDatosCliente;
 drop PROCEDURE if exists reservar_pre_reservar;
 drop TRIGGER   if exists disparador_anulacion;
+drop PROCEDURE if exists mostrarParticipantes;
+drop PROCEDURE if exists mostrarRecintos;
+drop PROCEDURE if exists eventoPrereserva;
+drop PROCEDURE if exists mostrarEspectaculos;
+drop PROCEDURE if exists infoLocalidades;
+
 delimiter //
 
 
@@ -611,7 +617,7 @@ END //
 /******************************************************************************************************************************************************************/
 create procedure obtenerEntradasCompradasCliente(IN dni varchar(9))
 begin
-	select espectaculos.nombre_espectaculo, recintos.nombre_recinto, fecha, gradas.nombre_grada, reservas_prereservas.tipo_usuario,
+	select espectaculos.nombre_espectaculo, recintos.nombre_recinto, fecha, gradas.nombre_grada, reservas_prereservas.id_localidad, reservas_prereservas.tipo_usuario, 
 		case 
 			when reservas_prereservas.tipo_usuario = 'jubilado' then gradas.precio_jubilado
             when reservas_prereservas.tipo_usuario = 'adulto' then gradas.precio_adulto
@@ -619,7 +625,7 @@ begin
             when reservas_prereservas.tipo_usuario = 'infantil' then gradas.precio_infantil
             when reservas_prereservas.tipo_usuario = 'bebe' then gradas.precio_bebe
 		end as precio
-	from reservas_prereservas, gradas, espectaculos, recintos where reservas_prereservas.dni = dni 
+	from reservas_prereservas, gradas, espectaculos recintos where reservas_prereservas.dni = dni 
 		and espectaculos.id_espectaculo = gradas.id_espectaculo = reservas_prereservas.id_espectaculo 
         and recintos.id_recinto = gradas.id_recinto = reservas_prereservas.id_recinto
         and reservas_prereservas.fecha = gradas.fecha 
@@ -721,15 +727,9 @@ IF estado = 'libre' /*la localidad está libre*/
     UPDATE Localidades SET estado_localidad = tipo_transaccion WHERE Localidades.id_localidad= id_localidad AND Localidades.id_grada= id_grada AND Localidades.id_recinto= id_recinto AND Localidades.id_espectaculo= id_espectaculo AND Localidades.fecha= fecha;
     INSERT INTO Reservas_Prereservas VALUES (id_localidad,id_grada,id_recinto,id_espectaculo,fecha,dni, NULL,tipo_usuario);
 	
-    /*Añadimos el disparador periodico (evento) para eliminar la prereserva pasados los T1 minutos de tiempo de validez*
-	IF tipo_transaccion = 'pre-reservado' THEN
-		CREATE EVENT evento_preserva ON SCHEDULE at now() + interval (SELECT T1 from eventos where id_espectaculo = espectaculo and id_recinto = recinto and reservas_prereservas.fecha = fecha) minute
-		DO 
-			delete from reservas_prereservas 
-				where id_localidad = filtro_localidad and reservas_prereservas.dni = dni and id_recinto = recinto 
-					and id_espectaculo = espectaculo and reservas_prereservas.fecha = fecha;
-	END IF;
-	**********************************************************************************************************/
+    /*Añadimos el disparador periodico (evento) para eliminar la prereserva pasados los T1 minutos de tiempo de validez*/
+	CALL eventoPrereserva(id_espectaculo, id_recinto, fecha, id_grada, id_localidad, dni);
+	/**********************************************************************************************************/
     
     SET id_transaccion=1;
     LEAVE reservar;
@@ -740,15 +740,9 @@ ELSEIF estado='pre-reservado' AND comprobacion = dni AND tipo_transaccion = 'res
     /*Actualizamos el estado de la localidad de pre-reservado a reservado*/
     UPDATE Localidades SET estado_localidad = 'reservado' WHERE Localidades.id_localidad= id_localidad AND Localidades.id_grada= id_grada AND Localidades.id_recinto= id_recinto AND Localidades.id_espectaculo= id_espectaculo AND Localidades.fecha= fecha;
 
-	/*Añadimos el disparador periodico (evento) para eliminar la prereserva pasados los T1 minutos de tiempo de validez*
-	IF tipo_transaccion = 'pre-reservado' THEN
-		CREATE EVENT evento_preserva ON SCHEDULE at now() + interval (SELECT T1 from eventos where id_espectaculo = espectaculo and id_recinto = recinto and reservas_prereservas.fecha = fecha) minute
-		DO 
-			delete from reservas_prereservas 
-				where id_localidad = filtro_localidad and reservas_prereservas.dni = dni and id_recinto = recinto 
-					and id_espectaculo = espectaculo and reservas_prereservas.fecha = fecha;
-	END IF;
-	**********************************************************************************************************/
+	/*Añadimos el disparador periodico (evento) para eliminar la prereserva pasados los T1 minutos de tiempo de validez*/
+	CALL eventoPrereserva(id_espectaculo, id_recinto, fecha, id_grada, id_localidad, dni);
+	/**********************************************************************************************************/
     
     SET id_transaccion=1;
     LEAVE reservar;
@@ -799,7 +793,99 @@ END//
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
+CREATE PROCEDURE mostrarParticipantes()
+BEGIN
+	select participante from participantes;
+END//
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+
+
+
+
 
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
+CREATE PROCEDURE mostrarRecintos()
+BEGIN
+	select nombre_recinto from recintos;
+END//
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+
+
+
+
+
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+CREATE PROCEDURE mostrarEspectaculos()
+BEGIN
+	select nombre_espectaculo from espectaculos;
+END//
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+
+
+
+
+
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+CREATE PROCEDURE eventoPrereserva(IN espectaculo int, IN recinto int, IN fecha datetime, IN grada int, IN localidad int, IN dni varchar(9))
+BEGIN
+	CREATE EVENT evento_preserva ON SCHEDULE at now() + interval (SELECT T1 from eventos where id_espectaculo = espectaculo and id_recinto = recinto and reservas_prereservas.fecha = fecha) minute
+	DO
+		delete from reservas_prereservas 
+			where id_localidad = filtro_localidad and reservas_prereservas.id_grada = grada and reservas_prereservas.dni = dni and id_recinto = recinto 
+				and id_espectaculo = espectaculo and reservas_prereservas.fecha = fecha;
+END//
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+	
+
+
+
+
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+CREATE TRIGGER disparador_insertar_evento BEFORE INSERT ON eventos FOR EACH ROW
+BEGIN
+	if exists (select * from eventos where eventos.id_recinto = new.id_recinto and eventos.fecha = new.fecha) then
+		signal SQLSTATE '45000';
+	end if;
+END//
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+
+
+
+
+
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+CREATE PROCEDURE infoLocalidades(IN id_espectaculo int, IN id_recinto int, IN fecha datetime, IN id_grada int)
+BEGIN
+        select id_localidad
+        from Localidades
+        where Localidades.id_grada = id_grada
+            and Localidades.id_espectaculo = id_espectaculo
+            and Localidades.id_recinto = id_recinto
+            and Localidades.fecha = fecha
+      and Localidades.estado_localidad = 'libre'
+      order by id_localidad;
+END //
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+/******************************************************************************************************************************************************************/
+delimiter ;
