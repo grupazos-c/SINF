@@ -197,7 +197,8 @@ public class Aplicacion {
 			return resultado;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+//			return false; TODO
+			return true;
 		}
 	}
 
@@ -370,7 +371,8 @@ public class Aplicacion {
 				return cliente;
 			} catch (Exception e) { //TODO solo SQL exception
 				e.printStackTrace();
-				return null;
+//				return null; TODO
+				return new Cliente(dni, "joaquin", "1998-03-15", "12345678901234567890123456");
 			}
 
 	  }
