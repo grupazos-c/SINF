@@ -3,7 +3,7 @@ package proyecto;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Cliente {
+public class Cliente_Java {
 
 	static final String JDBC_DRIVER = "com.mysql.jdb.Driver";
 	static final String DB_URL = "jdbc:mysql://localhost/Proyecto?useSSL=false"; //
