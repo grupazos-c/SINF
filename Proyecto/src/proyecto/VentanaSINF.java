@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -42,7 +43,7 @@ public class VentanaSINF extends JFrame {
 	 * panelPrincipal: aquí se mostrarán los eventos, nuestras entradas, o lo que
 	 * toque
 	 */
-	JPanel panelLogo, panelLogin, panelBusqueda, panelPrincipal;
+	JPanel panelLogo, panelLogin, panelBusqueda, panelPrincipal, panelEventos, panelGradas;
 	private JPanel contentPane;
 
 	/**
@@ -222,14 +223,27 @@ public class VentanaSINF extends JFrame {
 
 		/** Panel Principal */
 		panelPrincipal = new JPanel();
-		JScrollPane scrollPane = new JScrollPane(panelPrincipal);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        
+		panelEventos = new JPanel();
+		panelGradas = new JPanel();
+
         panelPrincipal.setBorder(new EmptyBorder(10, 10, 10, 10));
         panelPrincipal.setBackground(colorprincipal);
-        panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
+        panelPrincipal.setLayout(new CardLayout());
+		
+		JScrollPane scrollEventos = new JScrollPane(panelEventos);
+		scrollEventos.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollEventos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
+		JScrollPane scrollGradas = new JScrollPane(panelGradas);
+		scrollGradas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollGradas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        
+		panelEventos.setLayout(new BoxLayout(panelEventos, BoxLayout.Y_AXIS));
+		panelGradas.setLayout(new GridLayout(0, 6, 10, 10));
+		
+		panelPrincipal.add(panelEventos, "Eventos");
+		panelPrincipal.add(panelGradas, "Gradas");
+		
 		/**
 		 * Orden de paneles en el Pane
 		 */
@@ -511,39 +525,49 @@ public class VentanaSINF extends JFrame {
 
 	/**
 	 * Que pasa cuando buscamos algo
-	 * @param f, String participantes, String recinto, String 
-	 * @param e 
-	 * @param d 
-	 * @param c 
-	 * @param b 
+	 * 
+	 * @param adulto
+	 * @param infantil
+	 * @param parado
+	 * @param jubilado
+	 * @param bebe
+	 * @param participantes
+	 * @param espectaculo
+	 * @param recinto
+	 * @param precioMax
+	 * @param fechaMin
+	 * @param fechaMax
 	 */
 	private void buscar(boolean adulto, boolean infantil, boolean parado, boolean jubilado, boolean bebe, String participantes, String espectaculo, String recinto, int precioMax, String fechaMin, String fechaMax ) {
 		ArrayList<Evento> eventosFiltrados = Cliente.filtrarEventos(espectaculo, recinto, fechaMax, fechaMin, participantes, precioMax, jubilado, adulto, parado, infantil, bebe);
-		panelPrincipal.removeAll();
+		panelEventos.removeAll();
 		for (Evento evento : eventosFiltrados) {
 			JLabel texto = new JLabel(evento.toString());
 			texto.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+			texto.setForeground(Color.BLACK);
 			texto.addMouseListener(new MouseAdapter() {@Override
 			    public void mouseEntered(MouseEvent e) {
-					texto.setForeground(Color.BLUE);
+					texto.setForeground(new Color(new Random().nextInt(16777215))); //XD
+					setCursor(new Cursor(Cursor.HAND_CURSOR));
 			    }
 			    @Override
 			    public void mouseExited(MouseEvent e) {
 			    	texto.setForeground(Color.BLACK);
+					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			    }
 			    @Override
 		    	public void mouseClicked(MouseEvent e) {
 			    	accederEvento(evento);
 		    	}
 				private void accederEvento(Evento evento) {
-					JOptionPane.showMessageDialog(null, evento.toString());
-					
+					ArrayList<Grada> gradas = Cliente.buscarGradas(evento);
 				}
 			});
-			panelPrincipal.add(texto);
-			panelPrincipal.add(Box.createRigidArea(new Dimension(1, 10)));
+			panelEventos.add(texto);
+			panelEventos.add(Box.createRigidArea(new Dimension(1, 10)));
 		}
-		panelPrincipal.updateUI();
+		 panelPrincipal.getLayout();
+		panelEventos.updateUI();
 	}
 
 	private String fechaNac2String(LocalDateTime fechahora) {
