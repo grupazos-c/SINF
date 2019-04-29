@@ -1,6 +1,8 @@
 DROP DATABASE IF EXISTS VigoCoffeeLoversDB;
 CREATE DATABASE VigoCoffeeLoversDB;
-#GRANT ALL PRIVILEGES ON Proyecto.* TO 'cliente'@'localhost';
+DROP USER IF EXISTS 'cliente'@'localhost';
+CREATE USER 'cliente'@'localhost' IDENTIFIED BY '1234';
+GRANT EXECUTE ON VigoCoffeeLoversDB.* TO 'cliente'@'localhost';
 USE VigoCoffeeLoversDB;
 
 /******************************************************************************************************************************************************************/
