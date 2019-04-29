@@ -836,7 +836,7 @@ insert into Clientes VALUES ('78925136Y', 'David Perez Juin', 'ES782165304698521
 insert into Clientes VALUES ('78941235E', 'Alba Pires Filgueira', 'ES535695786256942065000569','1966-12-06');
 insert into Clientes VALUES ('48210368I', 'Sara Smith Portela', 'ES786328645132153468748554','2012-05-12');
 insert into Clientes VALUES ('34875964W', 'Pablo Cachafeiro Díaz', 'ES235416874235987132546987','1998-05-21');
-insert into Clientes VALUES ('45012317R', 'Roi Martínez Portela', 'ES787842135698741032569874','1990-01-01');
+insert into Clientes VALUES ('35582309K', 'Roi Martínez Portela', 'ES123456789012345678901234','1998-03-07');
 insert into Clientes VALUES ('77712358Y', 'Sergio Arcay Mallo', 'ES456123365478965231569852','1999-05-02');
 
 
@@ -1004,13 +1004,13 @@ begin
 		set @resultado = -1;
 	else
 		if nombre is not null then
-			update Clientes set Clientes.nombre = nombre where Clientes.dni = dni;
+			update Clientes set Clientes.nombre_cliente = nombre where Clientes.dni = dni;
 		end if;
 		if iban is not null then
 			update Clientes set Clientes.iban = iban where Clientes.dni = dni;
 		end if;
-		if fecha is not null then
-			update Clientes set Clientes.fecha = fechaNacimiento where Clientes.dni = dni;
+		if fechaNacimiento is not null then
+			update Clientes set Clientes.nacimiento = fechaNacimiento where Clientes.dni = dni;
 		end if;
 	end if;
 end //
@@ -1368,6 +1368,7 @@ IF estado = 'libre' /*la localidad está libre*/
     /*Añadimos el disparador periodico (evento) para eliminar la prereserva pasados los T1 minutos de tiempo de validez*/
 	IF tipo_transaccion = 'pre-reservado'
     THEN CALL eventoPrereserva(id_espectaculo, id_recinto, fecha, id_grada, id_localidad, dni);
+    END IF;
 	/**********************************************************************************************************/
 
     SET id_transaccion=1;
@@ -1380,7 +1381,9 @@ ELSEIF estado='pre-reservado' AND comprobacion = dni AND tipo_transaccion = 'res
     UPDATE Localidades SET estado_localidad = 'reservado' WHERE Localidades.id_localidad= id_localidad AND Localidades.id_grada= id_grada AND Localidades.id_recinto= id_recinto AND Localidades.id_espectaculo= id_espectaculo AND Localidades.fecha= fecha;
 
 	/*Añadimos el disparador periodico (evento) para eliminar la prereserva pasados los T1 minutos de tiempo de validez*/
-	CALL eventoPrereserva(id_espectaculo, id_recinto, fecha, id_grada, id_localidad, dni);
+	IF tipo_transaccion = 'pre-reservado'
+	THEN CALL eventoPrereserva(id_espectaculo, id_recinto, fecha, id_grada, id_localidad, dni);
+	END IF;
 	/**********************************************************************************************************/
 
     SET id_transaccion=1;
@@ -1479,11 +1482,11 @@ END//
 /******************************************************************************************************************************************************************/
 CREATE PROCEDURE eventoPrereserva(IN espectaculo int, IN recinto int, IN fecha datetime, IN grada int, IN localidad int, IN dni varchar(9))
 BEGIN
-	CREATE EVENT evento_preserva ON SCHEDULE at now() + interval (SELECT T1 from Eventos where id_espectaculo = espectaculo and id_recinto = recinto and Eventos.fecha = fecha) minute
-	DO
-		delete from Reservas_Prereservas
-			where id_localidad = localidad and id_grada = grada and Reservas_Prereservas.dni = dni and id_recinto = recinto
-				and id_espectaculo = espectaculo and Reservas_Prereservas.fecha = fecha;
+#	CREATE EVENT evento_preserva ON SCHEDULE at now() + interval (SELECT T1 from Eventos where id_espectaculo = espectaculo and id_recinto = recinto and Eventos.fecha = fecha) minute
+#	DO
+#		delete from Reservas_Prereservas
+#			where id_localidad = localidad and id_grada = grada and Reservas_Prereservas.dni = dni and id_recinto = recinto
+#				and id_espectaculo = espectaculo and Reservas_Prereservas.fecha = fecha;
 END//
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/

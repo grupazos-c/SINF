@@ -780,14 +780,19 @@ public class VentanaSINF extends JFrame {
 		int cantTotal = 0;
 		Evento evento = null;
 		for (Entrada entrada : entradas) {
-			int cantidad = (int) cantidades.get(entrada).getSelectedItem();
-			cantidadesint.put(entrada, cantidad);
-			cantTotal += cantidad;
-			evento = entrada.getEvento();
+			int cantidad;
+			try {
+				cantidad = (int) cantidades.get(entrada).getSelectedItem();
+				cantidadesint.put(entrada, cantidad);
+				cantTotal += cantidad;
+				evento = entrada.getEvento();
+			} catch (NullPointerException e) {
+			}
 		}
 		int cantMaxima = Aplicacion.obtenerMaximoPreReservas(evento);
-		if (cantTotal > cantMaxima) {
+		if (cantTotal > cantMaxima ) {
 			JOptionPane.showMessageDialog(null, "No se puede Pre-Reservar más de " + cantMaxima + " entradas para este evento");
+			return;
 		}
 		
 		int resultado = Aplicacion.reservarPreReservar(tipoTransaccion, dni, cantidadesint);
