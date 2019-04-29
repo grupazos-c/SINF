@@ -1160,8 +1160,11 @@ BEGIN
 
 	select count(*) into localidades_ocupadas_por_usuario_jubilado from Reservas_Prereservas, Gradas
 		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo
+			and Reservas_Prereservas.id_espectaculo = espectaculo
 			and Reservas_Prereservas.id_recinto = Gradas.id_recinto
+			and Reservas_Prereservas.id_recinto = recinto
 			and Reservas_Prereservas.fecha = Gradas.fecha
+			and Reservas_Prereservas.fecha = fecha
 			and Reservas_Prereservas.id_grada = Gradas.id_grada
 			and Gradas.id_grada = grada
 			and Reservas_Prereservas.tipo_usuario = 'jubilado'
@@ -1170,8 +1173,11 @@ BEGIN
 
 	select count(*) into localidades_ocupadas_por_usuario_adulto from Reservas_Prereservas, Gradas
 		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo
+			and Reservas_Prereservas.id_espectaculo = espectaculo
 			and Reservas_Prereservas.id_recinto = Gradas.id_recinto
+			and Reservas_Prereservas.id_recinto = recinto
 			and Reservas_Prereservas.fecha = Gradas.fecha
+			and Reservas_Prereservas.fecha = fecha
 			and Reservas_Prereservas.id_grada = Gradas.id_grada
 			and Gradas.id_grada = grada
 			and Reservas_Prereservas.tipo_usuario = 'adulto'
@@ -1180,8 +1186,11 @@ BEGIN
 
 	select count(*) into localidades_ocupadas_por_usuario_parado from Reservas_Prereservas, Gradas
 		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo
+			and Reservas_Prereservas.id_espectaculo = espectaculo
 			and Reservas_Prereservas.id_recinto = Gradas.id_recinto
+			and Reservas_Prereservas.id_recinto = recinto
 			and Reservas_Prereservas.fecha = Gradas.fecha
+			and Reservas_Prereservas.fecha = fecha
 			and Reservas_Prereservas.id_grada = Gradas.id_grada
 			and Gradas.id_grada = grada
 			and Reservas_Prereservas.tipo_usuario = 'adulto'
@@ -1190,8 +1199,11 @@ BEGIN
 
 	select count(*) into localidades_ocupadas_por_usuario_parado from Reservas_Prereservas, Gradas
 		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo
+			and Reservas_Prereservas.id_espectaculo = espectaculo
 			and Reservas_Prereservas.id_recinto = Gradas.id_recinto
+			and Reservas_Prereservas.id_recinto = recinto
 			and Reservas_Prereservas.fecha = Gradas.fecha
+			and Reservas_Prereservas.fecha = fecha
 			and Reservas_Prereservas.id_grada = Gradas.id_grada
 			and Gradas.id_grada = grada
 			and Reservas_Prereservas.tipo_usuario = 'parado'
@@ -1200,8 +1212,11 @@ BEGIN
 
 	select count(*) into localidades_ocupadas_por_usuario_infantil from Reservas_Prereservas, Gradas
 		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo
+			and Reservas_Prereservas.id_espectaculo = espectaculo
 			and Reservas_Prereservas.id_recinto = Gradas.id_recinto
+			and Reservas_Prereservas.id_recinto = recinto
 			and Reservas_Prereservas.fecha = Gradas.fecha
+			and Reservas_Prereservas.fecha = fecha
 			and Reservas_Prereservas.id_grada = Gradas.id_grada
 			and Gradas.id_grada = grada
 			and Reservas_Prereservas.tipo_usuario = 'infantil'
@@ -1211,8 +1226,11 @@ BEGIN
 
 	select count(*) into localidades_ocupadas_por_usuario_bebe from Reservas_Prereservas, Gradas
 		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo
+			and Reservas_Prereservas.id_espectaculo = espectaculo
 			and Reservas_Prereservas.id_recinto = Gradas.id_recinto
+			and Reservas_Prereservas.id_recinto = recinto
 			and Reservas_Prereservas.fecha = Gradas.fecha
+			and Reservas_Prereservas.fecha = fecha
 			and Reservas_Prereservas.id_grada = Gradas.id_grada
 			and Gradas.id_grada = grada
 			and Reservas_Prereservas.tipo_usuario = 'bebe'
