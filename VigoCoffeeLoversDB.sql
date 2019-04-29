@@ -1,6 +1,8 @@
 DROP DATABASE IF EXISTS VigoCoffeeLoversDB;
 CREATE DATABASE VigoCoffeeLoversDB;
 DROP USER IF EXISTS 'cliente'@'localhost';
+SET GLOBAL validate_password_length = 4;
+SET GLOBAL validate_password_policy = LOW;
 CREATE USER 'cliente'@'localhost' IDENTIFIED BY '1234';
 GRANT EXECUTE ON VigoCoffeeLoversDB.* TO 'cliente'@'localhost';
 USE VigoCoffeeLoversDB;
