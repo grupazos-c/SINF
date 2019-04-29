@@ -371,7 +371,7 @@ public class VentanaSINF extends JFrame {
 		array = Aplicacion.obtenerRecintos();
 		recintos.addItem(" - Recintos - ");
 		for (String string : array) {
-			espectaculos.addItem(string);			
+			recintos.addItem(string);			
 		}
 		
 	}

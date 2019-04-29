@@ -3,37 +3,18 @@ package proyecto;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Set;
 
 public class Aplicacion {
 
 	static final String JDBC_DRIVER = "com.mysql.jdb.Driver";
-	static final String DB_URL = "jdbc:mysql://localhost/Proyecto?useSSL=false"; //
+	static final String DB_URL = "jdbc:mysql://localhost/VigoCoffeeLoversDB?useSSL=false&noAccessToProcedureBodies=true"; //
 
 	static final String USER = "cliente";
 	static final String PASSWORD = "1234";
 
 	private static Connection conn = null;
 	private static Statement stmt = null;
-	//TODO borrar plz
-	public static void main(String[] args) {
-		ArrayList<Integer> integer = new ArrayList<Integer>();
-		integer.add(1);
-		integer.add(1);
-		integer.add(1);
-		integer.add(1);
-		integer.add(1);
-		integer.add(2);
-		integer.add(3);
-		integer.add(4);
-		integer.add(5);
-		integer.add(6);
-		integer.add(7);
-		integer.add(25);
-		System.out.println(integer.toString());
-		System.out.println("Salida: " + maxConsecutivos(integer)[0] + " en: " + maxConsecutivos(integer)[1]);
-	}
 
 	/**
 	 * Inicio de la conexión con la BD SQL
@@ -46,8 +27,7 @@ public class Aplicacion {
 		try {
 			Class.forName(JDBC_DRIVER);
 		} catch (ClassNotFoundException e) {
-			System.out.println("Error al inizializar el driver");
-			e.printStackTrace();
+			System.err.println("El driver se queja");
 		}
 
 		System.out.println("Connecting to database...");
@@ -309,8 +289,7 @@ public class Aplicacion {
 			return resultado;
 		} catch (SQLException e) {
 			e.printStackTrace();
-//			return false; TODO
-			return true;
+			return false;
 		}
 	}
 
@@ -359,34 +338,34 @@ public class Aplicacion {
 
 			close();
 			return eventos;
-		} catch (Exception e) { // TODO solo SQL exception
-//			e.printStackTrace();
-//			return null;
-			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-			return eventos; // TODO borrar prueba
+		} catch (Exception e) { 
+			e.printStackTrace();
+			return null;
+//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
+//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
+//			return eventos; // TODO borrar prueba
 		}
 	}
 
@@ -432,12 +411,12 @@ public class Aplicacion {
 			close();
 			return gradas;
 		} catch (Exception e) { // TODO solo SQL exception
-			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
 //			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
 //			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
 //			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
@@ -482,10 +461,10 @@ public class Aplicacion {
 
 			close();
 			return cliente;
-		} catch (Exception e) { // TODO solo SQL exception
+		} catch (Exception e) { 
 			e.printStackTrace();
-//				return null; TODO
-			return new Cliente(dni, "joaquin", "1998-03-15", "12345678901234567890123456");
+				return null; 
+//			return new Cliente(dni, "joaquin", "1998-03-15", "12345678901234567890123456");
 		}
 
 	}
@@ -548,17 +527,17 @@ public class Aplicacion {
 			return entradas;
 		} catch (SQLException e) {
 			e.printStackTrace();
-//				TODO
-			entradas.add(new Entrada(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"), 12,
-					1, "Adulto", 7, "Tribuna pobre"));
-			entradas.add(new Entrada(new Evento(1, "Espectaculo bueno", 1, "En un museo", "15-05-19 17:00:00"), 12, 1,
-					"Adulto", 100, "Tribuna"));
-			entradas.add(new Entrada(new Evento(1, "Espectaculo normalillo", 1, "En un museo", "15-05-19 17:00:00"), 12,
-					1, "Adulto", 25, "Tribuna normalilla"));
-			entradas.add(new Entrada(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"), 12,
-					1, "Adulto", 25, "Tribuna pobre"));
-			entradas.add(new Entrada(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"), 12,
-					1, "Adulto", 25, "Tribuna pobre"));
+////				TODO
+//			entradas.add(new Entrada(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"), 12,
+//					1, "Adulto", 7, "Tribuna pobre"));
+//			entradas.add(new Entrada(new Evento(1, "Espectaculo bueno", 1, "En un museo", "15-05-19 17:00:00"), 12, 1,
+//					"Adulto", 100, "Tribuna"));
+//			entradas.add(new Entrada(new Evento(1, "Espectaculo normalillo", 1, "En un museo", "15-05-19 17:00:00"), 12,
+//					1, "Adulto", 25, "Tribuna normalilla"));
+//			entradas.add(new Entrada(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"), 12,
+//					1, "Adulto", 25, "Tribuna pobre"));
+//			entradas.add(new Entrada(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"), 12,
+//					1, "Adulto", 25, "Tribuna pobre"));
 			return entradas;
 		}
 	}
