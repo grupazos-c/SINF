@@ -1,8 +1,6 @@
 DROP DATABASE IF EXISTS VigoCoffeeLoversDB;
 CREATE DATABASE VigoCoffeeLoversDB;
-DROP USER IF EXISTS 'cliente'@'localhost';
-CREATE USER 'cliente'@'localhost' IDENTIFIED BY '1234';
-GRANT EXECUTE ON VigoCoffeeLoversDB.* TO 'cliente'@'localhost';
+#GRANT ALL PRIVILEGES ON Proyecto.* TO 'cliente'@'localhost';
 USE VigoCoffeeLoversDB;
 
 /******************************************************************************************************************************************************************/
@@ -11,7 +9,7 @@ USE VigoCoffeeLoversDB;
 CREATE TABLE Espectaculos (
   id_espectaculo INT NOT NULL AUTO_INCREMENT,
   nombre_espectaculo VARCHAR (50) NOT NULL,
-  descripcion VARCHAR(50) NOT NULL,
+  descripcion VARCHAR(100) NOT NULL,
   tipo VARCHAR(15) NOT NULL,
   PRIMARY KEY (id_espectaculo)
 );
@@ -74,7 +72,7 @@ CREATE TABLE Gradas (
   maximo_parado INT NOT NULL,
   maximo_bebe INT NOT NULL,
   PRIMARY KEY (id_grada, id_recinto, id_espectaculo, fecha),
-  FOREIGN KEY (id_recinto, id_espectaculo, fecha)
+  FOREIGN KEY (id_espectaculo, id_recinto, fecha)
   REFERENCES Eventos(id_espectaculo, id_recinto, fecha)
   ON DELETE CASCADE
 
@@ -84,8 +82,8 @@ CREATE TABLE Localidades
 (
   id_localidad INT NOT NULL AUTO_INCREMENT,
   id_grada INT NOT NULL,
-  id_recinto INT NOT NULL,
   id_espectaculo INT NOT NULL,
+  id_recinto INT NOT NULL,
   fecha DATETIME NOT NULL,
   estado_localidad VARCHAR(15) NOT NULL,
   PRIMARY KEY (id_localidad, id_grada, id_recinto, id_espectaculo, fecha),
@@ -97,8 +95,8 @@ CREATE TABLE Localidades
 CREATE TABLE Reservas_Prereservas (
   id_localidad INT NOT NULL,
   id_grada INT NOT NULL,
-  id_recinto INT NOT NULL,
   id_espectaculo INT NOT NULL,
+  id_recinto INT NOT NULL,
   fecha DATETIME NOT NULL,
   dni VARCHAR(9) NOT NULL,
   sello_temporal TIMESTAMP DEFAULT NOW(),
@@ -130,29 +128,29 @@ DELETE FROM Recintos;
 DELETE FROM Clientes;
 
 
-INSERT INTO Espectaculos VALUES (1, 'Celta-Deportivo', 'Futbol');
-INSERT INTO Espectaculos VALUES (2, 'Civil War', 'Pelicula');
-INSERT INTO Espectaculos VALUES (3, 'Joaquin Sabina', 'Concierto');
-INSERT INTO Espectaculos VALUES (4, 'Alex Ubago', 'Concierto');
-INSERT INTO Espectaculos VALUES (5, 'Deportivo-Barcelona', 'Futbol');
-INSERT INTO Espectaculos VALUES (6, 'El Rey Leon', 'Teatro');
-INSERT INTO Espectaculos VALUES (7, 'Deadpool', 'Pelicula');
-INSERT INTO Espectaculos VALUES (8, 'Dumbo', 'Pelicula');
-INSERT INTO Espectaculos VALUES (9, 'Pokemon: Detective Pikachu', 'Pelicula');
-INSERT INTO Espectaculos VALUES (10, 'Capitana Marvel', 'Pelicula');
-INSERT INTO Espectaculos VALUES (11, 'Como entrenar a tu dragón', 'Pelicula');
-INSERT INTO Espectaculos VALUES (12, 'PortAmerica', 'Concierto');
-INSERT INTO Espectaculos VALUES (13, 'O son do Camiño', 'Concierto');
-INSERT INTO Espectaculos VALUES (14, 'Iván Ferreiro: Cena recalentada', 'Concierto');
-INSERT INTO Espectaculos VALUES (15, 'La Casa Azul: La gran Esfera', 'Concierto');
-INSERT INTO Espectaculos VALUES (16, 'Caperuzita Roja', 'Teatro');
-INSERT INTO Espectaculos VALUES (17, 'Shrek', 'Teatro');
-INSERT INTO Espectaculos VALUES (18, 'Peter Pan', 'Teatro');
-INSERT INTO Espectaculos VALUES (19, 'Nicolás Pastoriza', 'Concierto');
-INSERT INTO Espectaculos VALUES (20, 'Xabarín Club, 25 aniversario', 'Concierto');
-INSERT INTO Espectaculos VALUES (21, 'Celta B - Castilla', 'Futbol');
-INSERT INTO Espectaculos VALUES (22, 'Euroliga 3', 'Baloncesto');
-INSERT INTO Espectaculos VALUES (23, 'Celta Indepo - Barcelona', 'Baloncesto');
+INSERT INTO Espectaculos VALUES (1, 'Celta-Deportivo', 'Partido Celta de Vigo vs Deportivo de la Coru neno', 'Futbol');
+INSERT INTO Espectaculos VALUES (2, 'Civil War', 'Proyeccion de la pelicula Civil War', 'Pelicula');
+INSERT INTO Espectaculos VALUES (3, 'Joaquin Sabina', 'Concierto del señor Joaquin Sabina', 'Concierto');
+INSERT INTO Espectaculos VALUES (4, 'Alex Ubago', 'Concierto de gran Alex Ubago', 'Concierto');
+INSERT INTO Espectaculos VALUES (5, 'Deportivo-Barcelona', 'Partidazo entre el Deportivo de la Coruña y el Barcelona de Barcelona', 'Futbol');
+INSERT INTO Espectaculos VALUES (6, 'El Rey Leon', 'Representacion de la obra El Rey Leon', 'Teatro');
+INSERT INTO Espectaculos VALUES (7, 'Deadpool', 'Proyeccion de la pelicula Deadpool', 'Pelicula');
+INSERT INTO Espectaculos VALUES (8, 'Dumbo', 'Proyeccion de la pelicula Dumbo', 'Pelicula');
+INSERT INTO Espectaculos VALUES (9, 'Pokemon: Detective Pikachu', 'Proyeccion de la pelicula Detective Pikachu', 'Pelicula');
+INSERT INTO Espectaculos VALUES (10, 'Capitana Marvel', 'Proyeccion de la pelicula Capitana Marvel', 'Pelicula');
+INSERT INTO Espectaculos VALUES (11, 'Como entrenar a tu dragón', 'Proyeccion de la pelicula Como entrenar a tu dragón', 'Pelicula');
+INSERT INTO Espectaculos VALUES (12, 'PortAmerica', 'Ven a disfrutar de grandes artistas como Madness, Amaia, Andres Calamaro, La casa azul, Sidecars', 'Festival');
+INSERT INTO Espectaculos VALUES (13, 'O son do Camiño', 'Celebracion del festival O son do Camiño', 'Festival');
+INSERT INTO Espectaculos VALUES (14, 'Iván Ferreiro: Cena recalentada', 'Conciertazo del gran artista contemporaneo Iván Ferreiro con su Cena recalentada', 'Concierto');
+INSERT INTO Espectaculos VALUES (15, 'La Casa Azul: La gran Esfera', 'Gran concierto del inigualable grupo La Casa Azul en una gran esfera tambien azul', 'Concierto');
+INSERT INTO Espectaculos VALUES (16, 'Caperucita Roja', 'Representacion del caperuzo dramatico y rojo', 'Teatro');
+INSERT INTO Espectaculos VALUES (17, 'Shrek', '', 'Teatro');
+INSERT INTO Espectaculos VALUES (18, 'Peter Pan', '', 'Teatro');
+INSERT INTO Espectaculos VALUES (19, 'Nicolás Pastoriza', '', 'Concierto');
+INSERT INTO Espectaculos VALUES (20, 'Xabarín Club, 25 aniversario', '', 'Concierto');
+INSERT INTO Espectaculos VALUES (21, 'Celta B - Castilla', '', 'Futbol');
+INSERT INTO Espectaculos VALUES (22, 'Euroliga 3', '', 'Baloncesto');
+INSERT INTO Espectaculos VALUES (23, 'Celta Indepo - Barcelona', '', 'Baloncesto');
 
 
 INSERT INTO Participantes VALUES ('Celta', 1);
@@ -224,7 +222,6 @@ INSERT INTO Eventos VALUES (2, 11, '17-05-11 00:00:00', 20,'abierto', 2, '17-05-
 INSERT INTO Eventos VALUES (2, 12, '17-05-10 18:00:00', 30,'abierto', 3, '17-05-10 21:00:00', 8, 10, 10, 2); #civil war en Gran vía
 INSERT INTO Eventos VALUES (2, 12, '17-05-10 21:10:00', 30,'abierto', 3, '17-05-11 00:10:00', 8, 10, 10, 2); #civil war en Gran vía
 INSERT INTO Eventos VALUES (2, 12, '17-05-11 00:00:00', 30,'abierto', 3, '17-05-11 03:00:00', 8, 10, 10, 2); #civil war en Gran vía
-INSERT INTO Eventos VALUES (2, 12, '17-05-11 00:00:00', 30,'abierto', 3, '17-05-11 03:00:00', 8, 10, 10, 2); #civil war en Gran vía
 INSERT INTO Eventos VALUES (2, 13, '17-05-10 18:00:00', 25,'abierto', 4, '17-05-10 21:00:00', 10, 60, 0, 2); #civil war en Plaza elíptica
 INSERT INTO Eventos VALUES (2, 13, '17-05-10 21:10:00', 25,'abierto', 4, '17-05-11 00:10:00', 10, 60, 0, 2); #civil war en Plaza elíptica
 INSERT INTO Eventos VALUES (2, 13, '17-05-11 00:00:00', 25,'abierto', 4, '17-05-11 03:00:00', 10, 60, 0, 2); #civil war en Plaza elíptica
@@ -233,7 +230,6 @@ INSERT INTO Eventos VALUES (2, 13, '17-05-11 18:00:00', 25,'abierto', 4, '17-05-
 INSERT INTO Eventos VALUES (2, 13, '17-05-11 21:10:00', 25,'abierto', 4, '17-05-12 00:10:00', 10, 60, 0, 2); #civil war en Plaza elíptica
 INSERT INTO Eventos VALUES (2, 13, '17-05-12 19:00:00', 25,'abierto', 4, '17-05-12 22:00:00', 10, 60, 0, 2); #civil war en Plaza elíptica
 INSERT INTO Eventos VALUES (2, 13, '17-05-12 22:10:00', 25,'abierto', 4, '17-05-13 01:00:00', 10, 60, 0, 2); #civil war en Plaza elíptica
-
 
 INSERT INTO Eventos VALUES (3, 1, '18-05-12 16:00:00', 100,'abierto', 10, '18-05-12 20:00:00', 5, 20, 130, 30); #Joaquin
 INSERT INTO Eventos VALUES (3, 2, '18-05-15 18:00:00', 100,'abierto', 5, '18-05-15 22:00:00', 5, 20, 130, 30); #Joaquin
@@ -244,18 +240,18 @@ INSERT INTO Eventos VALUES (4, 4, '20-05-12 16:00:00', 80,'abierto', 50, '20-05-
 INSERT INTO Eventos VALUES (5, 5, '20-06-12 16:00:00', 70,'abierto', 50, '20-06-10 18:00:00', 3, 240, 60, 30); #Alex Ubago
 INSERT INTO Eventos VALUES (4, 4, '20-07-12 16:00:00', 80,'abierto', 50, '20-07-10 18:00:00', 3, 240, 60, 30); #Alex ubago
 INSERT INTO Eventos VALUES (5, 5, '20-08-12 16:00:00', 70,'abierto', 50, '20-08-10 18:00:00', 3, 240, 60, 30); #Alex Ubago
-INSERT INTO Eventos VALUES (4, 4, '20-09-12 16:00:00', 80,'abierto', 50, '20-09-10 18:00:00', 3, 240, 60, 30); #Alex ubago
+INSERT INTO Eventos VALUES (4, 4, '20-09-12 16:00:00', 80,'abierto', 50, '20-09-10 18:00:00', 3, 240, 60, 30); #Alex Ubago
 INSERT INTO Eventos VALUES (5, 5, '20-10-12 16:00:00', 70,'abierto', 50, '20-10-10 18:00:00', 3, 240, 60, 30); #Alex Ubago
 
 INSERT INTO Eventos VALUES (6, 15, '21-05-12 16:00:00', 95,'cerrado', 50, '21-05-12 19:00:00', 5, 60, 50, 10); #Depor-Barça
 INSERT INTO Eventos VALUES (6, 15, '21-11-20 18:00:00', 95,'abierto', 50, '21-11-20 21:00:00', 5, 60, 50, 10); #Depor-Barça
 
-INSERT INTO Eventos VALUES (7, 7, '22-05-12 16:00:00', 100,'abierto', 20 '22-05-12 20:00:00', 5, 120, 50, 30); #El rey Leon
-INSERT INTO Eventos VALUES (7, 7, '22-05-13 16:00:00', 100,'abierto', 20 '22-05-13 20:00:00', 5, 120, 50, 30); #El rey Leon
-INSERT INTO Eventos VALUES (7, 7, '22-05-15 16:00:00', 100,'abierto', 20 '22-05-15 20:00:00', 5, 120, 50, 30); #El rey Leon
-INSERT INTO Eventos VALUES (7, 7, '22-06-01 16:00:00', 100,'abierto', 20 '22-06-01 20:00:00', 5, 120, 50, 30); #El rey Leon
-INSERT INTO Eventos VALUES (7, 7, '22-06-03 16:00:00', 100,'abierto', 20 '22-06-03 20:00:00', 5, 120, 50, 30); #El rey Leon
-INSERT INTO Eventos VALUES (7, 7, '22-06-06 16:00:00', 100,'abierto', 20 '22-06-06 20:00:00', 5, 120, 50, 30); #El rey Leon
+INSERT INTO Eventos VALUES (7, 7, '22-05-12 16:00:00', 100,'abierto', 20, '22-05-12 20:00:00', 5, 120, 50, 30); #El rey Leon
+INSERT INTO Eventos VALUES (7, 7, '22-05-13 16:00:00', 100,'abierto', 20, '22-05-13 20:00:00', 5, 120, 50, 30); #El rey Leon
+INSERT INTO Eventos VALUES (7, 7, '22-05-15 16:00:00', 100,'abierto', 20, '22-05-15 20:00:00', 5, 120, 50, 30); #El rey Leon
+INSERT INTO Eventos VALUES (7, 7, '22-06-01 16:00:00', 100,'abierto', 20, '22-06-01 20:00:00', 5, 120, 50, 30); #El rey Leon
+INSERT INTO Eventos VALUES (7, 7, '22-06-03 16:00:00', 100,'abierto', 20, '22-06-03 20:00:00', 5, 120, 50, 30); #El rey Leon
+INSERT INTO Eventos VALUES (7, 7, '22-06-06 16:00:00', 100,'abierto', 20, '22-06-06 20:00:00', 5, 120, 50, 30); #El rey Leon
 
 /*
 INSERT INTO Eventos VALUES (8, 11, '22-05-12 16:00:00', 100,'abierto', 50, '22-05-12 18:00:00', 5, 20, 50, 10); #Dumbo 1
@@ -350,42 +346,42 @@ INSERT INTO Localidades VALUES (1, 1, 2, 11, '17-05-10 18:00:00','libre'); #Loca
 INSERT INTO Localidades VALUES (2, 1, 2, 11, '17-05-10 18:00:00','libre');
 INSERT INTO Localidades VALUES (3, 1, 2, 11, '17-05-10 18:00:00','reservado');
 INSERT INTO Localidades VALUES (4, 1, 2, 11, '17-05-10 18:00:00','reservado');
-INSERT INTO Localidades VALUES (5, 1, 2, 11, '17-05-10 18:00:00','libre');
-INSERT INTO Localidades VALUES (6, 1, 2, 11, '17-05-10 18:00:00','reservado');
+INSERT INTO Localidades VALUES (5, 1, 2, 11, '17-05-10 18:00:00','reservado');
+INSERT INTO Localidades VALUES (6, 1, 2, 11, '17-05-10 18:00:00','libre');
 INSERT INTO Localidades VALUES (7, 1, 2, 11, '17-05-10 18:00:00','libre');
-INSERT INTO Localidades VALUES (8, 1, 2, 11, '17-05-10 18:00:00','reservado');
+INSERT INTO Localidades VALUES (8, 1, 2, 11, '17-05-10 18:00:00','libre');
 INSERT INTO Localidades VALUES (9, 1, 2, 11, '17-05-10 18:00:00','libre');
-INSERT INTO Localidades VALUES (10, 1, 2, 11, '17-05-10 18:00:00','reservado');
-INSERT INTO Localidades VALUES (11, 1, 2, 11, '17-05-10 18:00:00','reservado');
+INSERT INTO Localidades VALUES (10, 1, 2, 11, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (11, 1, 2, 11, '17-05-10 18:00:00','libre');
 INSERT INTO Localidades VALUES (12, 1, 2, 11, '17-05-10 18:00:00','libre');
 INSERT INTO Localidades VALUES (13, 1, 2, 11, '17-05-10 18:00:00','libre');
-INSERT INTO Localidades VALUES (14, 1, 2, 11, '17-05-10 18:00:00','reservado');
+INSERT INTO Localidades VALUES (14, 1, 2, 11, '17-05-10 18:00:00','libre');
 INSERT INTO Localidades VALUES (15, 1, 2, 11, '17-05-10 18:00:00','libre');
-INSERT INTO Localidades VALUES (16, 1, 2, 11, '17-05-10 18:00:00','reservado');
+INSERT INTO Localidades VALUES (16, 1, 2, 11, '17-05-10 18:00:00','libre');
 INSERT INTO Localidades VALUES (17, 1, 2, 11, '17-05-10 18:00:00','libre');
-INSERT INTO Localidades VALUES (18, 1, 2, 11, '17-05-10 18:00:00','reservado');
+INSERT INTO Localidades VALUES (18, 1, 2, 11, '17-05-10 18:00:00','libre');
 INSERT INTO Localidades VALUES (19, 1, 2, 11, '17-05-10 18:00:00','libre');
 INSERT INTO Localidades VALUES (20, 1, 2, 11, '17-05-10 18:00:00','libre');
 
 
-INSERT INTO Localidades VALUES (1, 1, 2, 11, '17-05-10 21:10:00','pre-reservado');
-INSERT INTO Localidades VALUES (2, 1, 2, 11, '17-05-10 21:10:00','pre-reservado');
+INSERT INTO Localidades VALUES (1, 1, 2, 11, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (2, 1, 2, 11, '17-05-10 21:10:00','libre');
 INSERT INTO Localidades VALUES (3, 1, 2, 11, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (4, 1, 2, 11, '17-05-10 21:10:00','pre-reservado');
-INSERT INTO Localidades VALUES (5, 1, 2, 11, '17-05-10 21:10:00','pre-reservado');
-INSERT INTO Localidades VALUES (6, 1, 2, 11, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (7, 1, 2, 11, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (8, 1, 2, 11, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (9, 1, 2, 11, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (10, 1, 2, 11, '17-05-10 21:10:00','reservado');
+INSERT INTO Localidades VALUES (4, 1, 2, 11, '17-05-10 21:10:00','reservado');
+INSERT INTO Localidades VALUES (5, 1, 2, 11, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (6, 1, 2, 11, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (7, 1, 2, 11, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (8, 1, 2, 11, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (9, 1, 2, 11, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (10, 1, 2, 11, '17-05-10 21:10:00','libre');
 INSERT INTO Localidades VALUES (11, 1, 2, 11, '17-05-10 21:10:00','libre');
 INSERT INTO Localidades VALUES (12, 1, 2, 11, '17-05-10 21:10:00','libre');
-INSERT INTO Localidades VALUES (13, 1, 2, 11, '17-05-10 21:10:00','reservado');
+INSERT INTO Localidades VALUES (13, 1, 2, 11, '17-05-10 21:10:00','libre');
 INSERT INTO Localidades VALUES (14, 1, 2, 11, '17-05-10 21:10:00','libre');
-INSERT INTO Localidades VALUES (15, 1, 2, 11, '17-05-10 21:10:00','reservado');
+INSERT INTO Localidades VALUES (15, 1, 2, 11, '17-05-10 21:10:00','libre');
 INSERT INTO Localidades VALUES (16, 1, 2, 11, '17-05-10 21:10:00','libre');
 INSERT INTO Localidades VALUES (17, 1, 2, 11, '17-05-10 21:10:00','libre');
-INSERT INTO Localidades VALUES (18, 1, 2, 11, '17-05-10 21:10:00','reservado');
+INSERT INTO Localidades VALUES (18, 1, 2, 11, '17-05-10 21:10:00','libre');
 INSERT INTO Localidades VALUES (19, 1, 2, 11, '17-05-10 21:10:00','libre');
 INSERT INTO Localidades VALUES (20, 1, 2, 11, '17-05-10 21:10:00','libre');
 
@@ -393,22 +389,22 @@ INSERT INTO Localidades VALUES (20, 1, 2, 11, '17-05-10 21:10:00','libre');
 INSERT INTO Localidades VALUES (1, 1, 2, 11, '17-05-11 00:00:00','libre');
 INSERT INTO Localidades VALUES (2, 1, 2, 11, '17-05-11 00:00:00','libre');
 INSERT INTO Localidades VALUES (3, 1, 2, 11, '17-05-11 00:00:00','libre');
-INSERT INTO Localidades VALUES (4, 1, 2, 11, '17-05-11 00:00:00','reservado');
+INSERT INTO Localidades VALUES (4, 1, 2, 11, '17-05-11 00:00:00','libre');
 INSERT INTO Localidades VALUES (5, 1, 2, 11, '17-05-11 00:00:00','libre');
-INSERT INTO Localidades VALUES (6, 1, 2, 11, '17-05-11 00:00:00','reservado');
+INSERT INTO Localidades VALUES (6, 1, 2, 11, '17-05-11 00:00:00','libre');
 INSERT INTO Localidades VALUES (7, 1, 2, 11, '17-05-11 00:00:00','libre');
-INSERT INTO Localidades VALUES (8, 1, 2, 11, '17-05-11 00:00:00','reservado');
-INSERT INTO Localidades VALUES (9, 1, 2, 11, '17-05-11 00:00:00','reservado');
+INSERT INTO Localidades VALUES (8, 1, 2, 11, '17-05-11 00:00:00','libre');
+INSERT INTO Localidades VALUES (9, 1, 2, 11, '17-05-11 00:00:00','libre');
 INSERT INTO Localidades VALUES (10, 1, 2, 11, '17-05-11 00:00:00','libre');
-INSERT INTO Localidades VALUES (11, 1, 2, 11, '17-05-11 00:00:00','reservado');
+INSERT INTO Localidades VALUES (11, 1, 2, 11, '17-05-11 00:00:00','libre');
 INSERT INTO Localidades VALUES (12, 1, 2, 11, '17-05-11 00:00:00','libre');
-INSERT INTO Localidades VALUES (13, 1, 2, 11, '17-05-11 00:00:00','reservado');
+INSERT INTO Localidades VALUES (13, 1, 2, 11, '17-05-11 00:00:00','libre');
 INSERT INTO Localidades VALUES (14, 1, 2, 11, '17-05-11 00:00:00','libre');
-INSERT INTO Localidades VALUES (15, 1, 2, 11, '17-05-11 00:00:00','reservado');
+INSERT INTO Localidades VALUES (15, 1, 2, 11, '17-05-11 00:00:00','libre');
 INSERT INTO Localidades VALUES (16, 1, 2, 11, '17-05-11 00:00:00','libre');
-INSERT INTO Localidades VALUES (17, 1, 2, 11, '17-05-11 00:00:00','reservado');
+INSERT INTO Localidades VALUES (17, 1, 2, 11, '17-05-11 00:00:00','libre');
 INSERT INTO Localidades VALUES (18, 1, 2, 11, '17-05-11 00:00:00','libre');
-INSERT INTO Localidades VALUES (19, 1, 2, 11, '17-05-11 00:00:00','reservado');
+INSERT INTO Localidades VALUES (19, 1, 2, 11, '17-05-11 00:00:00','libre');
 INSERT INTO Localidades VALUES (20, 1, 2, 11, '17-05-11 00:00:00','libre');
 
 
@@ -417,20 +413,20 @@ INSERT INTO Localidades VALUES (2, 1, 2, 12, '17-05-10 18:00:00','reservado');
 INSERT INTO Localidades VALUES (3, 1, 2, 12, '17-05-10 18:00:00','reservado');
 INSERT INTO Localidades VALUES (4, 1, 2, 12, '17-05-10 18:00:00','reservado');
 INSERT INTO Localidades VALUES (5, 1, 2, 12, '17-05-10 18:00:00','reservado');
-INSERT INTO Localidades VALUES (6, 1, 2, 12, '17-05-10 18:00:00','ocupado');
-INSERT INTO Localidades VALUES (7, 1, 2, 12, '17-05-10 18:00:00','ocupado');
-INSERT INTO Localidades VALUES (8, 1, 2, 12, '17-05-10 18:00:00','ocupado');
-INSERT INTO Localidades VALUES (9, 1, 2, 12, '17-05-10 18:00:00','reservado');
-INSERT INTO Localidades VALUES (10, 1, 2, 12, '17-05-10 18:00:00','ocupado');
-INSERT INTO Localidades VALUES (11, 1, 2, 12, '17-05-10 18:00:00','reservado');
-INSERT INTO Localidades VALUES (12, 1, 2, 12, '17-05-10 18:00:00','ocupado');
-INSERT INTO Localidades VALUES (13, 1, 2, 12, '17-05-10 18:00:00','reservado');
-INSERT INTO Localidades VALUES (14, 1, 2, 12, '17-05-10 18:00:00','ocupado');
-INSERT INTO Localidades VALUES (15, 1, 2, 12, '17-05-10 18:00:00','reservado');
-INSERT INTO Localidades VALUES (16, 1, 2, 12, '17-05-10 18:00:00','ocupado');
-INSERT INTO Localidades VALUES (17, 1, 2, 12, '17-05-10 18:00:00','ocupado');
-INSERT INTO Localidades VALUES (18, 1, 2, 12, '17-05-10 18:00:00','reservado');
-INSERT INTO Localidades VALUES (19, 1, 2, 12, '17-05-10 18:00:00','ocupado');
+INSERT INTO Localidades VALUES (6, 1, 2, 12, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (7, 1, 2, 12, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (8, 1, 2, 12, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (9, 1, 2, 12, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (10, 1, 2, 12, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (11, 1, 2, 12, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (12, 1, 2, 12, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (13, 1, 2, 12, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (14, 1, 2, 12, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (15, 1, 2, 12, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (16, 1, 2, 12, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (17, 1, 2, 12, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (18, 1, 2, 12, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (19, 1, 2, 12, '17-05-10 18:00:00','libre');
 INSERT INTO Localidades VALUES (20, 1, 2, 12, '17-05-10 18:00:00','reservado');
 INSERT INTO Localidades VALUES (21, 1, 2, 12, '17-05-10 18:00:00','reservado');
 INSERT INTO Localidades VALUES (22, 1, 2, 12, '17-05-10 18:00:00','reservado');
@@ -440,40 +436,40 @@ INSERT INTO Localidades VALUES (25, 1, 2, 12, '17-05-10 18:00:00','libre');
 INSERT INTO Localidades VALUES (26, 1, 2, 12, '17-05-10 18:00:00','libre');
 INSERT INTO Localidades VALUES (27, 1, 2, 12, '17-05-10 18:00:00','libre');
 INSERT INTO Localidades VALUES (28, 1, 2, 12, '17-05-10 18:00:00','libre');
-INSERT INTO Localidades VALUES (29 1, 2, 12, '17-05-10 18:00:00','libre');
+INSERT INTO Localidades VALUES (29, 1, 2, 12, '17-05-10 18:00:00','libre');
 INSERT INTO Localidades VALUES (30, 1, 2, 12, '17-05-10 18:00:00','reservado');
 
 
-INSERT INTO Localidades VALUES (1, 1, 2, 12, '17-05-10 21:10:00','pre-reservado');
-INSERT INTO Localidades VALUES (2, 1, 2, 12, '17-05-10 21:10:00','pre-reservado');
-INSERT INTO Localidades VALUES (3, 1, 2, 12, '17-05-10 21:10:00','pre-reservado');
-INSERT INTO Localidades VALUES (4, 1, 2, 12, '17-05-10 21:10:00','pre-reservado');
-INSERT INTO Localidades VALUES (5, 1, 2, 12, '17-05-10 21:10:00','pre-reservado');
-INSERT INTO Localidades VALUES (6, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (7, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (8, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (9, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (10, 1, 2, 12, '17-05-10 21:10:00','reservado');libre
-INSERT INTO Localidades VALUES (11, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (12, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (13, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (14, 1, 2, 12, '17-05-10 21:10:00','reservado');
+INSERT INTO Localidades VALUES (1, 1, 2, 12, '17-05-10 21:10:00','reservado');
+INSERT INTO Localidades VALUES (2, 1, 2, 12, '17-05-10 21:10:00','reservado');
+INSERT INTO Localidades VALUES (3, 1, 2, 12, '17-05-10 21:10:00','reservado');
+INSERT INTO Localidades VALUES (4, 1, 2, 12, '17-05-10 21:10:00','reservado');
+INSERT INTO Localidades VALUES (5, 1, 2, 12, '17-05-10 21:10:00','reservado');
+INSERT INTO Localidades VALUES (6, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (7, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (8, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (9, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (10, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (11, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (12, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (13, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (14, 1, 2, 12, '17-05-10 21:10:00','libre');
 INSERT INTO Localidades VALUES (15, 1, 2, 12, '17-05-10 21:10:00','deteriorado');
-INSERT INTO Localidades VALUES (16, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (17, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (18, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (19, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (20, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (21, 1, 2, 12, '17-05-10 21:10:00','reservado');
+INSERT INTO Localidades VALUES (16, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (17, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (18, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (19, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (20, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (21, 1, 2, 12, '17-05-10 21:10:00','libre');
 INSERT INTO Localidades VALUES (22, 1, 2, 12, '17-05-10 21:10:00','deteriorado');
-INSERT INTO Localidades VALUES (23, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (24, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (25, 1, 2, 12, '17-05-10 21:10:00','reservado');
+INSERT INTO Localidades VALUES (23, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (24, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (25, 1, 2, 12, '17-05-10 21:10:00','libre');
 INSERT INTO Localidades VALUES (26, 1, 2, 12, '17-05-10 21:10:00','deteriorado');
 INSERT INTO Localidades VALUES (27, 1, 2, 12, '17-05-10 21:10:00','deteriorado');
-INSERT INTO Localidades VALUES (28, 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (29 1, 2, 12, '17-05-10 21:10:00','reservado');
-INSERT INTO Localidades VALUES (30, 1, 2, 12, '17-05-10 21:10:00','reservado');
+INSERT INTO Localidades VALUES (28, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (29, 1, 2, 12, '17-05-10 21:10:00','libre');
+INSERT INTO Localidades VALUES (30, 1, 2, 12, '17-05-10 21:10:00','libre');
 
 
 INSERT INTO Localidades VALUES (1, 1, 2, 12, '17-05-11 00:00:00','libre');
@@ -519,7 +515,7 @@ INSERT INTO Localidades VALUES (8, 1, 3, 1, '18-05-12 16:00:00','libre');
 INSERT INTO Localidades VALUES (9, 1, 3, 1, '18-05-12 16:00:00','libre');
 INSERT INTO Localidades VALUES (10, 1, 3, 1, '18-05-12 16:00:00','libre');
 INSERT INTO Localidades VALUES (11, 1, 3, 1, '18-05-12 16:00:00','libre');
-INSERT INTO Localidades VALUES (12, 1, 3, 1, '18-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (12, 1, 3, 1, '18-05-12 16:00:00','reservado');
 INSERT INTO Localidades VALUES (13, 1, 3, 1, '18-05-12 16:00:00','libre');
 INSERT INTO Localidades VALUES (14, 1, 3, 1, '18-05-12 16:00:00','libre');
 INSERT INTO Localidades VALUES (15, 1, 3, 1, '18-05-12 16:00:00','libre');
@@ -578,7 +574,7 @@ INSERT INTO Localidades VALUES (13, 3, 3, 1, '18-05-12 16:00:00','libre');
 INSERT INTO Localidades VALUES (14, 3, 3, 1, '18-05-12 16:00:00','libre');
 INSERT INTO Localidades VALUES (15, 3, 3, 1, '18-05-12 16:00:00','libre');
 INSERT INTO Localidades VALUES (16, 3, 3, 1, '18-05-12 16:00:00','libre');
-INSERT INTO Localidades VALUES (7, 3, 3, 1, '18-05-12 16:00:00','libre');
+INSERT INTO Localidades VALUES (17, 3, 3, 1, '18-05-12 16:00:00','libre');
 INSERT INTO Localidades VALUES (18, 3, 3, 1, '18-05-12 16:00:00','libre');
 INSERT INTO Localidades VALUES (19, 3, 3, 1, '18-05-12 16:00:00','libre');
 INSERT INTO Localidades VALUES (20, 3, 3, 1, '18-05-12 16:00:00','libre');
@@ -721,10 +717,10 @@ INSERT INTO Localidades VALUES (6, 4, 3, 2, '18-05-15 18:00:00','libre');
 INSERT INTO Localidades VALUES (7, 4, 3, 2, '18-05-15 18:00:00','libre');
 INSERT INTO Localidades VALUES (8, 4, 3, 2, '18-05-15 18:00:00','libre');
 INSERT INTO Localidades VALUES (9, 4, 3, 2, '18-05-15 18:00:00','libre');
-INSERT INTO Localidades VALUES (10, 4, 3, 2, '18-05-15 18:00:00','libre'
+INSERT INTO Localidades VALUES (10, 4, 3, 2, '18-05-15 18:00:00','libre');
 
 
-INSERT INTO Localidades VALUES (1, 1, 6, 15, '21-05-12 16:00:00','libre'); Depor-Barça
+INSERT INTO Localidades VALUES (1, 1, 6, 15, '21-05-12 16:00:00','libre'); #Depor-Barça
 INSERT INTO Localidades VALUES (2, 1, 6, 15, '21-05-12 16:00:00','libre');
 INSERT INTO Localidades VALUES (3, 1, 6, 15, '21-05-12 16:00:00','libre');
 INSERT INTO Localidades VALUES (4, 1, 6, 15, '21-05-12 16:00:00','libre');
@@ -840,15 +836,27 @@ insert into Clientes VALUES ('45012317R', 'Roi Martínez Portela', 'ES7878421356
 insert into Clientes VALUES ('77712358Y', 'Sergio Arcay Mallo', 'ES456123365478965231569852','1999-05-02');
 
 
-INSERT INTO Reservas_Prereservas VALUES (1, 1, 1, 1, '16-05-12 16:00:00', '32654125D', NULL, 'Adulto');
-INSERT INTO Reservas_Prereservas VALUES (3, 1, 1, 1, '16-05-12 16:00:00', '32654125D', NULL, 'Infantil');
-INSERT INTO Reservas_Prereservas VALUES (1, 2, 2, 2, '17-05-10 18:00:00', '45213658R', NULL, "Infantil");
-INSERT INTO Reservas_Prereservas VALUES (3, 2, 2, 2, '17-05-10 18:00:00', '45213658R', NULL, "Infantil");
-INSERT INTO Reservas_Prereservas VALUES (1, 3, 3, 3, '18-05-12 16:00:00', '78941235E', NULL, "Parado");
-INSERT INTO Reservas_Prereservas VALUES (3, 3, 3, 3, '18-05-12 16:00:00', '48210368I', NULL, "Jubilado");
+INSERT INTO Reservas_Prereservas VALUES (3, 1, 2, 11, '17-05-10 18:00:00', '32654125D', NULL, 'Adulto');
+INSERT INTO Reservas_Prereservas VALUES (4, 1, 2, 11, '17-05-10 18:00:00', '32654125D', NULL, 'Adulto');
+INSERT INTO Reservas_Prereservas VALUES (5, 1, 2, 11, '17-05-10 18:00:00', '32654125D', NULL, 'Infantil');
 
+INSERT INTO Reservas_Prereservas VALUES (1, 1, 2, 12, '17-05-10 21:10:00', '45213658R', NULL, "Jubilado");
+INSERT INTO Reservas_Prereservas VALUES (2, 1, 2, 12, '17-05-10 21:10:00', '45213658R', NULL, "Adulto");
+INSERT INTO Reservas_Prereservas VALUES (3, 1, 2, 12, '17-05-10 21:10:00', '45213658R', NULL, "Adulto");
+INSERT INTO Reservas_Prereservas VALUES (4, 1, 2, 12, '17-05-10 21:10:00', '45213658R', NULL, "Infantil");
+INSERT INTO Reservas_Prereservas VALUES (5, 1, 2, 12, '17-05-10 21:10:00', '45213658R', NULL, "Bebe");
 
+INSERT INTO Reservas_Prereservas VALUES (30, 1, 2, 12, '17-05-10 18:00:00', '45213658R', NULL, "Parado");
 
+INSERT INTO Reservas_Prereservas VALUES (1, 20, 1, 2, 12, '78941235E', NULL, "Jubilado");
+INSERT INTO Reservas_Prereservas VALUES (1, 21, 1, 2, 12, '78941235E', NULL, "Parado");
+INSERT INTO Reservas_Prereservas VALUES (1, 22, 1, 2, 12, '78941235E', NULL, "Infantil");
+INSERT INTO Reservas_Prereservas VALUES (1, 23, 1, 2, 12, '78941235E', NULL, "Infantil");
+
+INSERT INTO Reservas_Prereservas VALUES (3, 1, 2, 11, '17-05-10 21:10:00', '48210368I', NULL, "Adulto");
+INSERT INTO Reservas_Prereservas VALUES (4, 1, 2, 11, '17-05-10 21:10:00', '48210368I', NULL, "Adulto");
+
+INSERT INTO Reservas_Prereservas VALUES (4, 1, 3, 1, '18-05-12 16:00:00', '64648568I', NULL, "Jubilado");
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
