@@ -1000,7 +1000,7 @@ create procedure cambiarDatosCliente (
     OUT resultado int
 )
 begin
-	if dni is null or (select * from Clientes where dni = dni) is null then
+	if (select nombre_cliente from Clientes where Clientes.dni = dni) is null then
 		set @resultado = -1;
 	else
 		if nombre is not null then
@@ -1010,7 +1010,7 @@ begin
 			update Clientes set Clientes.iban = iban where Clientes.dni = dni;
 		end if;
 		if fecha is not null then
-			update Clientes set Clientes.fecha = fecha where Clientes.dni = dni;
+			update Clientes set Clientes.fecha = fechaNacimiento where Clientes.dni = dni;
 		end if;
 	end if;
 end //
@@ -1047,8 +1047,8 @@ end //
 create procedure filtrarEventos (
 	IN filtro_espectaculo varchar(50),
     IN filtro_recinto varchar(25),
-    IN filtro_fecha_min varchar(19),
-    IN filtro_fecha_max varchar(19),
+    IN filtro_fecha_min datetime,
+    IN filtro_fecha_max datetime,
     IN filtro_participante varchar(25),
     IN filtro_precio_max int,
     IN Jubilado BOOLEAN,
@@ -1058,15 +1058,15 @@ create procedure filtrarEventos (
     IN Bebe BOOLEAN
 )
 BEGIN
-    
+
     drop table if exists resultado;
     drop table if exists aux;
-    
+
 	/*Primero filtramos por los tipos de usuarios que nos han mandado como TRUE*/
 	if jubilado=false and adulto=false and parado=false and infantil=false and bebe=false then
 		CREATE TEMPORARY TABLE resultado select Eventos.* from Eventos where estado_evento = 'abierto';
 	else
-		CREATE TEMPORARY TABLE resultado select Eventos.* from Eventos, Gradas 
+		CREATE TEMPORARY TABLE resultado select Eventos.* from Eventos, Gradas
 		where Eventos.id_espectaculo = Gradas.id_espectaculo and Eventos.id_recinto = Gradas.id_recinto and Eventos.fecha = Gradas.fecha and estado_evento = 'abierto'
         and 0 < if(jubilado = true	, Gradas.maximo_jubilado	, 1)
         and 0 < if(adulto 	= true	, Gradas.maximo_adulto		, 1)
@@ -1076,39 +1076,39 @@ BEGIN
         group by Eventos.id_espectaculo, Eventos.id_recinto, Eventos.fecha;
 	end if;
 	/**********************************************************************************************************************************************************/
-    
+
     CREATE TEMPORARY TABLE aux select * from Eventos where 1=0;
-    
+
 	if filtro_espectaculo is not null then
 		insert into aux select resultado.* from resultado, Espectaculos where resultado.id_espectaculo = Espectaculos.id_espectaculo and Espectaculos.nombre_espectaculo = filtro_espectaculo;
         truncate resultado; insert into resultado select * from aux; truncate aux;
     end if;
-    
+
 	if filtro_recinto is not null then
 		insert into aux select resultado.* from resultado, Recintos where resultado.id_recinto = Recintos.id_recinto and Recintos.nombre_recinto = filtro_recinto;
 		truncate resultado; insert into resultado select * from aux; truncate aux;
     end if;
-    
+
 	if filtro_fecha_min is not null then
 		insert into aux select resultado.* from resultado where resultado.fecha >= filtro_fecha_min;
 		truncate resultado; insert into resultado select * from aux; truncate aux;
     end if;
-    
+
 	if filtro_fecha_max is not null then
 		insert into aux select resultado.* from resultado where resultado.fecha <= filtro_fecha_max;
 		truncate resultado; insert into resultado select * from aux; truncate aux;
     end if;
-    
+
 	if filtro_participante is not null then
-		insert into aux select resultado.* from resultado, Espectaculos, Participantes 
-			where resultado.id_espectaculo = Espectaculos.id_espectaculo 
+		insert into aux select resultado.* from resultado, Espectaculos, Participantes
+			where resultado.id_espectaculo = Espectaculos.id_espectaculo
 				AND Espectaculos.id_espectaculo = Participantes.id_espectaculo AND Participantes.participante = filtro_participante;
 		truncate resultado; insert into resultado select * from aux; truncate aux;
     end if;
 
-	if filtro_precio_max is not null then
-		insert into aux select resultado.* from resultado, Gradas 
-			where resultado.id_espectaculo = Gradas.id_espectaculo AND resultado.id_recinto = Gradas.id_recinto AND resultado.fecha = Gradas.fecha 
+	if filtro_precio_max != 0 then
+		insert into aux select resultado.id_espectaculo, resultado.id_recinto, resultado.fecha from resultado, Gradas
+			where resultado.id_espectaculo = Gradas.id_espectaculo AND resultado.id_recinto = Gradas.id_recinto AND resultado.fecha = Gradas.fecha
 				and filtro_precio_max <= if(jubilado = true	, Gradas.precio_jubilado	, filtro_precio_max)
 				and filtro_precio_max <= if(adulto 	 = true	, Gradas.precio_adulto		, filtro_precio_max)
 				and filtro_precio_max <= if(parado 	 = true	, Gradas.precio_parado		, filtro_precio_max)
@@ -1120,7 +1120,7 @@ BEGIN
 
 	select resultado.id_espectaculo, Espectaculos.nombre_espectaculo, resultado.id_recinto, Recintos.nombre_recinto, resultado.fecha
 		from resultado, Espectaculos, Recintos where resultado.id_espectaculo = Espectaculos.id_espectaculo and resultado.id_recinto = Recintos.id_recinto;
-	
+
     DROP TABLE resultado;
 
 END//
@@ -1145,11 +1145,11 @@ BEGIN
 	DECLARE localidades_ocupadas_por_usuario_infantil int;
 	DECLARE localidades_ocupadas_por_usuario_bebe int;
 
-	select count(*) into localidades_disponibles from Gradas, Localidades 
-		where Gradas.id_grada = Localidades.id_grada 
-			and Gradas.id_recinto = Localidades.id_recinto 
-			and Gradas.id_espectaculo = Localidades.id_espectaculo 
-			and Gradas.fecha = Localidades.fecha 
+	select count(*) into localidades_disponibles from Gradas, Localidades
+		where Gradas.id_grada = Localidades.id_grada
+			and Gradas.id_recinto = Localidades.id_recinto
+			and Gradas.id_espectaculo = Localidades.id_espectaculo
+			and Gradas.fecha = Localidades.fecha
 			and Gradas.id_espectaculo = espectaculo
 			and Gradas.id_recinto = recinto
 			and Gradas.fecha = fecha
@@ -1157,9 +1157,9 @@ BEGIN
 			and Localidades.estado_localidad = 'libre'
 		GROUP BY Gradas.id_grada;
 	if localidades_disponibles is null then set localidades_disponibles = 0; end if;
-		
-	select count(*) into localidades_ocupadas_por_usuario_jubilado from Reservas_Prereservas, Gradas 
-		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo 
+
+	select count(*) into localidades_ocupadas_por_usuario_jubilado from Reservas_Prereservas, Gradas
+		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo
 			and Reservas_Prereservas.id_recinto = Gradas.id_recinto
 			and Reservas_Prereservas.fecha = Gradas.fecha
 			and Reservas_Prereservas.id_grada = Gradas.id_grada
@@ -1167,9 +1167,9 @@ BEGIN
 			and Reservas_Prereservas.tipo_usuario = 'jubilado'
 		GROUP BY Gradas.id_grada, Reservas_Prereservas.tipo_usuario;
 	if localidades_ocupadas_por_usuario_jubilado is null then set localidades_ocupadas_por_usuario_jubilado = 0; end if;
-		
-	select count(*) into localidades_ocupadas_por_usuario_adulto from Reservas_Prereservas, Gradas 
-		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo 
+
+	select count(*) into localidades_ocupadas_por_usuario_adulto from Reservas_Prereservas, Gradas
+		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo
 			and Reservas_Prereservas.id_recinto = Gradas.id_recinto
 			and Reservas_Prereservas.fecha = Gradas.fecha
 			and Reservas_Prereservas.id_grada = Gradas.id_grada
@@ -1177,9 +1177,9 @@ BEGIN
 			and Reservas_Prereservas.tipo_usuario = 'adulto'
 		GROUP BY Gradas.id_grada, Reservas_Prereservas.tipo_usuario;
 	if localidades_ocupadas_por_usuario_adulto is null then set localidades_ocupadas_por_usuario_adulto = 0;  end if;
-		
-	select count(*) into localidades_ocupadas_por_usuario_parado from Reservas_Prereservas, Gradas 
-		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo 
+
+	select count(*) into localidades_ocupadas_por_usuario_parado from Reservas_Prereservas, Gradas
+		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo
 			and Reservas_Prereservas.id_recinto = Gradas.id_recinto
 			and Reservas_Prereservas.fecha = Gradas.fecha
 			and Reservas_Prereservas.id_grada = Gradas.id_grada
@@ -1187,9 +1187,9 @@ BEGIN
 			and Reservas_Prereservas.tipo_usuario = 'adulto'
 		GROUP BY Gradas.id_grada, Reservas_Prereservas.tipo_usuario;
 	if localidades_ocupadas_por_usuario_parado is null then set localidades_ocupadas_por_usuario_parado = 0; end if;
-		
-	select count(*) into localidades_ocupadas_por_usuario_parado from Reservas_Prereservas, Gradas 
-		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo 
+
+	select count(*) into localidades_ocupadas_por_usuario_parado from Reservas_Prereservas, Gradas
+		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo
 			and Reservas_Prereservas.id_recinto = Gradas.id_recinto
 			and Reservas_Prereservas.fecha = Gradas.fecha
 			and Reservas_Prereservas.id_grada = Gradas.id_grada
@@ -1197,9 +1197,9 @@ BEGIN
 			and Reservas_Prereservas.tipo_usuario = 'parado'
 		GROUP BY Gradas.id_grada, Reservas_Prereservas.tipo_usuario;
 	if localidades_ocupadas_por_usuario_bebe is null then set localidades_ocupadas_por_usuario_bebe = 0; end if;
-		
-	select count(*) into localidades_ocupadas_por_usuario_infantil from Reservas_Prereservas, Gradas 
-		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo 
+
+	select count(*) into localidades_ocupadas_por_usuario_infantil from Reservas_Prereservas, Gradas
+		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo
 			and Reservas_Prereservas.id_recinto = Gradas.id_recinto
 			and Reservas_Prereservas.fecha = Gradas.fecha
 			and Reservas_Prereservas.id_grada = Gradas.id_grada
@@ -1207,10 +1207,10 @@ BEGIN
 			and Reservas_Prereservas.tipo_usuario = 'infantil'
 		GROUP BY Gradas.id_grada, Reservas_Prereservas.tipo_usuario;
 	if localidades_ocupadas_por_usuario_infantil is null then set localidades_ocupadas_por_usuario_infantil = 0; end if;
-		
-        
-	select count(*) into localidades_ocupadas_por_usuario_bebe from Reservas_Prereservas, Gradas 
-		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo 
+
+
+	select count(*) into localidades_ocupadas_por_usuario_bebe from Reservas_Prereservas, Gradas
+		where Reservas_Prereservas.id_espectaculo = Gradas.id_espectaculo
 			and Reservas_Prereservas.id_recinto = Gradas.id_recinto
 			and Reservas_Prereservas.fecha = Gradas.fecha
 			and Reservas_Prereservas.id_grada = Gradas.id_grada
@@ -1218,17 +1218,17 @@ BEGIN
 			and Reservas_Prereservas.tipo_usuario = 'bebe'
 		GROUP BY Gradas.id_grada, Reservas_Prereservas.tipo_usuario;
 	if localidades_ocupadas_por_usuario_bebe is null then set localidades_ocupadas_por_usuario_bebe = 0; end if;
-    
-		select Gradas.id_grada, 
-			if(localidades_disponibles < localidades_ocupadas_por_usuario_jubilado, localidades_disponibles, localidades_ocupadas_por_usuario_jubilado) as localidades_jubilado,
+
+		select Gradas.id_grada, Gradas.nombre_grada,
+			if(localidades_disponibles < (maximo_jubilado - localidades_ocupadas_por_usuario_jubilado), localidades_disponibles, maximo_jubilado - localidades_ocupadas_por_usuario_jubilado) as localidades_jubilado,
 			Gradas.precio_jubilado,
-			if(localidades_disponibles < localidades_ocupadas_por_usuario_adulto, localidades_disponibles, localidades_ocupadas_por_usuario_adulto) 	as localidades_adulto,
+			if(localidades_disponibles < (maximo_adulto - localidades_ocupadas_por_usuario_adulto), localidades_disponibles, maximo_adulto - localidades_ocupadas_por_usuario_adulto) 	as localidades_adulto,
 			Gradas.precio_adulto,
-			if(localidades_disponibles < localidades_ocupadas_por_usuario_parado, localidades_disponibles, localidades_ocupadas_por_usuario_parado) 	as localidades_parado,
+			if(localidades_disponibles < (maximo_parado - localidades_ocupadas_por_usuario_parado), localidades_disponibles, maximo_parado - localidades_ocupadas_por_usuario_parado) 	as localidades_parado,
 			Gradas.precio_parado,
-			if(localidades_disponibles < localidades_ocupadas_por_usuario_infantil, localidades_disponibles, localidades_ocupadas_por_usuario_infantil) as localidades_infantil,
+			if(localidades_disponibles < (maximo_infantil - localidades_ocupadas_por_usuario_infantil), localidades_disponibles, maximo_infantil - localidades_ocupadas_por_usuario_infantil) as localidades_infantil,
 			Gradas.precio_infantil,
-			if(localidades_disponibles < localidades_ocupadas_por_usuario_bebe, localidades_disponibles, localidades_ocupadas_por_usuario_bebe) 		as localidades_bebe,
+			if(localidades_disponibles < (maximo_bebe - localidades_ocupadas_por_usuario_bebe), localidades_disponibles, maximo_bebe - localidades_ocupadas_por_usuario_bebe) 		as localidades_bebe,
 			Gradas.precio_bebe
 		from Gradas, Eventos
         where Gradas.id_grada = grada
@@ -1253,18 +1253,20 @@ END //
 /******************************************************************************************************************************************************************/
 create procedure obtenerEntradasCompradasCliente(IN dni varchar(9))
 begin
-	select Espectaculos.nombre_espectaculo, Recintos.nombre_recinto, fecha, Gradas.nombre_grada, Reservas_Prereservas.id_localidad, Reservas_Prereservas.tipo_usuario, 
-		case 
+	select Espectaculos.nombre_espectaculo, Recintos.nombre_recinto, Gradas.fecha, Gradas.nombre_grada, Reservas_Prereservas.id_localidad, Reservas_Prereservas.tipo_usuario,
+		case
 			when Reservas_Prereservas.tipo_usuario = 'jubilado' then Gradas.precio_jubilado
             when Reservas_Prereservas.tipo_usuario = 'adulto' then Gradas.precio_adulto
             when Reservas_Prereservas.tipo_usuario = 'parado' then Gradas.precio_parado
             when Reservas_Prereservas.tipo_usuario = 'infantil' then Gradas.precio_infantil
             when Reservas_Prereservas.tipo_usuario = 'bebe' then Gradas.precio_bebe
 		end as precio
-	from Reservas_Prereservas, Gradas, Espectaculos Recintos where Reservas_Prereservas.dni = dni 
-		and Espectaculos.id_espectaculo = Gradas.id_espectaculo = Reservas_Prereservas.id_espectaculo 
-        and Recintos.id_recinto = Gradas.id_recinto = Reservas_Prereservas.id_recinto
-        and Reservas_Prereservas.fecha = Gradas.fecha 
+	from Reservas_Prereservas, Gradas, Espectaculos, Recintos where Reservas_Prereservas.dni = dni
+		and Espectaculos.id_espectaculo = Gradas.id_espectaculo 
+		and Espectaculos.id_espectaculo = Reservas_Prereservas.id_espectaculo
+        and Recintos.id_recinto = Gradas.id_recinto 
+        and Recintos.id_recinto = Reservas_Prereservas.id_recinto
+        and Reservas_Prereservas.fecha = Gradas.fecha
         and Reservas_Prereservas.id_grada = Gradas.id_grada;
 end //
 /******************************************************************************************************************************************************************/
@@ -1362,11 +1364,12 @@ IF estado = 'libre' /*la localidad está libre*/
     /*PROCEDEMOS A METER LOS DATOS EN Reservas_Prereservas y actualizar el estado de la localidad en Localidades*/
     UPDATE Localidades SET estado_localidad = tipo_transaccion WHERE Localidades.id_localidad= id_localidad AND Localidades.id_grada= id_grada AND Localidades.id_recinto= id_recinto AND Localidades.id_espectaculo= id_espectaculo AND Localidades.fecha= fecha;
     INSERT INTO Reservas_Prereservas VALUES (id_localidad,id_grada,id_recinto,id_espectaculo,fecha,dni, NULL,tipo_usuario);
-	
+
     /*Añadimos el disparador periodico (evento) para eliminar la prereserva pasados los T1 minutos de tiempo de validez*/
-	CALL eventoPrereserva(id_espectaculo, id_recinto, fecha, id_grada, id_localidad, dni);
+	IF tipo_transaccion = 'pre-reservado'
+    THEN CALL eventoPrereserva(id_espectaculo, id_recinto, fecha, id_grada, id_localidad, dni);
 	/**********************************************************************************************************/
-    
+
     SET id_transaccion=1;
     LEAVE reservar;
 
@@ -1379,7 +1382,7 @@ ELSEIF estado='pre-reservado' AND comprobacion = dni AND tipo_transaccion = 'res
 	/*Añadimos el disparador periodico (evento) para eliminar la prereserva pasados los T1 minutos de tiempo de validez*/
 	CALL eventoPrereserva(id_espectaculo, id_recinto, fecha, id_grada, id_localidad, dni);
 	/**********************************************************************************************************/
-    
+
     SET id_transaccion=1;
     LEAVE reservar;
 
@@ -1469,23 +1472,23 @@ END//
 
 
 
-
+/*aqui hay que cambiar*/
 
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
 CREATE PROCEDURE eventoPrereserva(IN espectaculo int, IN recinto int, IN fecha datetime, IN grada int, IN localidad int, IN dni varchar(9))
 BEGIN
-	CREATE EVENT evento_preserva ON SCHEDULE at now() + interval (SELECT T1 from Eventos where id_espectaculo = espectaculo and id_recinto = recinto and Reservas_Prereservas.fecha = fecha) minute
+	CREATE EVENT evento_preserva ON SCHEDULE at now() + interval (SELECT T1 from Eventos where id_espectaculo = espectaculo and id_recinto = recinto and Eventos.fecha = fecha) minute
 	DO
-		delete from Reservas_Prereservas 
-			where id_localidad = filtro_localidad and Reservas_Prereservas.id_grada = grada and Reservas_Prereservas.dni = dni and id_recinto = recinto 
+		delete from Reservas_Prereservas
+			where id_localidad = localidad and id_grada = grada and Reservas_Prereservas.dni = dni and id_recinto = recinto
 				and id_espectaculo = espectaculo and Reservas_Prereservas.fecha = fecha;
 END//
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
-	
+
 
 
 
@@ -1534,9 +1537,20 @@ END //
 /******************************************************************************************************************************************************************/
 CREATE PROCEDURE obtenerMaximoPrereservas(IN id_espectaculo int, IN id_recinto int, IN fecha datetime, OUT maximo_prereservas int)
 BEGIN
-        select Eventos.max_prereservas INTO maximo_prereservas from Eventos where Eventos.id_espectaculo = id_espectaculo and Eventos.id_recinto and Eventos.fecha = fecha;
+        select Eventos.max_prereservas INTO maximo_prereservas from Eventos where Eventos.id_espectaculo = id_espectaculo and Eventos.id_recinto = id_recinto and Eventos.fecha = fecha;
 END //
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
+
+/**/
+/**/
+/**/
+CREATE PROCEDURE mostrarGradas(IN id_espectaculo int, IN id_recinto int, IN fecha datetime)
+BEGIN
+        select id_grada from Gradas where Gradas.id_espectaculo = id_espectaculo and Gradas.id_recinto = id_recinto and Gradas.fecha = fecha;
+END //
+/**/
+/**/
+/**/
 delimiter ;

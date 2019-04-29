@@ -307,21 +307,40 @@ public class Aplicacion {
 	 * @param bebe
 	 * @param infantil
 	 */
-	public static ArrayList<Evento> filtrarEventos(String espectaculo, String recinto, String fechamax, String fechamin,
+	public static ArrayList<Evento> filtrarEventos(String espectaculo, String recinto, String fechamax, String fechamin ,
 			String participante, int precio_max, boolean jubilado, boolean adulto, boolean parado, boolean bebe,
 			boolean infantil) {
 		ArrayList<Evento> eventos = new ArrayList<Evento>();
 		try {
 			init();
 
+			System.out.println("Linea: (" + espectaculo + "," + recinto + ","+ fechamin + ","+ fechamax + ","+ participante + ","+ precio_max + ","+ jubilado + ","+ adulto + ","+ parado + ","+ infantil + ","+ bebe + ")");
+			
 			String SQLProcedure = "{call filtrarEventos(?,?,?,?,?,?,?,?,?,?,?)}";
 			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
-			cstmt.setString(1, espectaculo);
-			cstmt.setString(2, recinto);
+			if (espectaculo.equals(" - Espectáculos - ")) {
+				cstmt.setString(1, null);		
+				System.out.println("Espect a null");
+			} else {
+				cstmt.setString(1, espectaculo);				
+			}
+
+			if (recinto.equals(" - Recintos - ")) {
+				cstmt.setString(2, null);
+				System.out.println("recintos a null");
+			} else {
+				cstmt.setString(2, recinto);
+			}
+
+			if (participante.equals(" - Participantes - ")) {
+				cstmt.setString(5, null);
+				System.out.println("part a null");
+			} else {
+				cstmt.setString(5, participante);
+			}
 			cstmt.setString(3, fechamin);
 			cstmt.setString(4, fechamax);
-			cstmt.setString(5, participante);
-			cstmt.setInt(6, precio_max);
+			cstmt.setInt(6, 0);
 			cstmt.setBoolean(7, jubilado);
 			cstmt.setBoolean(8, adulto);
 			cstmt.setBoolean(9, parado);
@@ -375,7 +394,8 @@ public class Aplicacion {
 		try {
 			init();
 
-			String SQLProcedure = "{call muestraGradas(?,?,?)}"; // Primero bucamos cuantas gradas iteraremos
+			System.out.println("Llamada (" + evento.getId_espectaculo() + "," + evento.getId_recinto() + "," + evento.getFecha() + ")");
+			String SQLProcedure = "{call mostrarGradas(?,?,?)}"; // Primero bucamos cuantas gradas iteraremos
 			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
 			cstmt.setInt(1, evento.getId_espectaculo());
 			cstmt.setInt(2, evento.getId_recinto());
@@ -389,12 +409,13 @@ public class Aplicacion {
 			}
 
 			for (Integer integer : id_gradas) {
-				SQLProcedure = "{call infoGradas(?,?,?,?)}"; // Ahora llamaos al info una vez por grada GG
+				System.out.println("Llamada: (" + evento.getId_espectaculo() + "," +  evento.getId_recinto() + "," + evento.getFecha() + "," +  integer + ")");
+				SQLProcedure = "{call infoGrada(?,?,?,?)}"; // Ahora llamaos al info una vez por grada GG
 				CallableStatement cstmt2 = conn.prepareCall(SQLProcedure);
-				cstmt.setInt(1, evento.getId_espectaculo());
-				cstmt.setInt(2, evento.getId_recinto());
-				cstmt.setString(3, evento.getFecha());
-				cstmt.setInt(4, integer);
+				cstmt2.setInt(1, evento.getId_espectaculo());
+				cstmt2.setInt(2, evento.getId_recinto());
+				cstmt2.setString(3, evento.getFecha());
+				cstmt2.setInt(4, integer);
 
 				ResultSet rs2 = cstmt2.executeQuery();
 
@@ -409,9 +430,11 @@ public class Aplicacion {
 			}
 
 			close();
+			System.out.println(gradas);
 			return gradas;
-		} catch (Exception e) { // TODO solo SQL exception
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
+		} catch (Exception e) { 
+			e.printStackTrace();
+			//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
 //			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
 //			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
 //			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
