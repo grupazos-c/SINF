@@ -790,7 +790,7 @@ public class VentanaSINF extends JFrame {
 			}
 		}
 		int cantMaxima = Aplicacion.obtenerMaximoPreReservas(evento);
-		if (cantTotal > cantMaxima ) {
+		if (cantTotal > cantMaxima && tipoTransaccion.equals("pre-reserva")) {
 			JOptionPane.showMessageDialog(null, "No se puede Pre-Reservar más de " + cantMaxima + " entradas para este evento");
 			return;
 		}

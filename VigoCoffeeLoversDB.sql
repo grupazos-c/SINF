@@ -1253,7 +1253,7 @@ END //
 /******************************************************************************************************************************************************************/
 create procedure obtenerEntradasCompradasCliente(IN dni varchar(9))
 begin
-	select Espectaculos.nombre_espectaculo, Recintos.nombre_recinto, Gradas.fecha, Gradas.nombre_grada, Reservas_Prereservas.id_localidad, Reservas_Prereservas.tipo_usuario,
+	select Espectaculos.nombre_espectaculo, Grada.id_grada, Espectaculos.id_espectaculo, Recintos.id_recinto, Recintos.nombre_recinto, Gradas.fecha, Gradas.nombre_grada, Reservas_Prereservas.id_localidad, Reservas_Prereservas.tipo_usuario,
 		case
 			when Reservas_Prereservas.tipo_usuario = 'jubilado' then Gradas.precio_jubilado
             when Reservas_Prereservas.tipo_usuario = 'adulto' then Gradas.precio_adulto
