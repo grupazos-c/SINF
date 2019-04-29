@@ -276,7 +276,7 @@ public class Aplicacion {
 		try {
 			init();
 
-			String SQLProcedure = "{call existeCliente(?,?}";
+			String SQLProcedure = "{call existeCliente(?,?)}";
 			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
 			cstmt.setString(1, dni);
 			cstmt.registerOutParameter(2, Types.BOOLEAN);
@@ -340,7 +340,7 @@ public class Aplicacion {
 			return eventos;
 		} catch (Exception e) { 
 			e.printStackTrace();
-			return null;
+			return eventos;
 //			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
 //			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
 //			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
@@ -456,7 +456,7 @@ public class Aplicacion {
 
 			rs.next();
 
-			Cliente cliente = new Cliente(dni, rs.getString("nombre"), rs.getString("nacimiento"),
+			Cliente cliente = new Cliente(dni, rs.getString("nombre_cliente"), rs.getString("nacimiento"),
 					rs.getString("iban"));
 
 			close();
@@ -485,7 +485,7 @@ public class Aplicacion {
 		try {
 			init();
 
-			String SQLProcedure = "{call modificarDatosCliente(?,?,?,?,?)}";
+			String SQLProcedure = "{call cambiarDatosCliente(?,?,?,?,?)}";
 			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
 			cstmt.setString(1, dni);
 			cstmt.setString(2, nombre);
