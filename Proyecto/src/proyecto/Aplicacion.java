@@ -568,15 +568,15 @@ public class Aplicacion {
 	public static int obtenerMaximoPreReservas(Evento evento) {
 		try {
             init();
-            String SQLProcedure = "{call modificarDatosCliente(?,?,?,?,?)}";
+            String SQLProcedure = "{call obtenerMaximoPrereservas(?,?,?,?)}";
 			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
 			cstmt.setInt(1, evento.getId_espectaculo());
 			cstmt.setInt(2, evento.getId_recinto());
 			cstmt.setString(3, evento.getFecha());
-			cstmt.registerOutParameter(5, Types.INTEGER);
+			cstmt.registerOutParameter(4, Types.INTEGER);
 			cstmt.executeUpdate();
 
-			int resultado = cstmt.getInt(5);
+			int resultado = cstmt.getInt(4);
 			return resultado;
 			
         } catch (SQLException e) {
