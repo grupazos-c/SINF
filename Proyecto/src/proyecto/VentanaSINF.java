@@ -145,11 +145,11 @@ public class VentanaSINF extends JFrame {
 
 		JButton BuscarJB = new JButton("Buscar");
 		JLabel TipoUsuarioJL = new JLabel("Tipo de entrada:");
-		JCheckBox AdultoJCB = new JCheckBox("Adulto", true);
-		JCheckBox InfantilJCB = new JCheckBox("Infantil", true);
-		JCheckBox ParadoJCB = new JCheckBox("Parado", true);
-		JCheckBox JubiladoJCB = new JCheckBox("Jubilado", true);
-		JCheckBox BebeJCB = new JCheckBox("Bebé", true);
+		JCheckBox AdultoJCB = new JCheckBox("Adulto", false);
+		JCheckBox InfantilJCB = new JCheckBox("Infantil", false);
+		JCheckBox ParadoJCB = new JCheckBox("Parado", false);
+		JCheckBox JubiladoJCB = new JCheckBox("Jubilado", false);
+		JCheckBox BebeJCB = new JCheckBox("Bebé", false);
 		participantes = new JComboBox<String>();
 		espectaculos = new JComboBox<String>();
 		recintos = new JComboBox<String>();
@@ -337,8 +337,11 @@ public class VentanaSINF extends JFrame {
 					String fechamaxs = null;
 					try {
 						fechamins = fecha2String(obtenerFechaHora(fechamin, horamin));
-						fechamaxs = fecha2String(obtenerFechaHora(fechamax, horamax));
 					} catch (NullPointerException e1) {
+					}
+					try {
+						fechamaxs = fecha2String(obtenerFechaHora(fechamax, horamax));
+					} catch (NullPointerException e2) {
 					}
 					buscar(AdultoJCB.isSelected(), InfantilJCB.isSelected(), ParadoJCB.isSelected(),
 							JubiladoJCB.isSelected(), BebeJCB.isSelected(), (String) participantes.getSelectedItem(),
@@ -669,7 +672,7 @@ public class VentanaSINF extends JFrame {
 			for (int i = 0; i <= grada.getMaxAdulto(); i++) {
 				cantidadAdulto.addItem(i);
 			}
-			cajaAdulto.add(new JLabel(" " + String.valueOf(grada.getPrecioAdulto())));
+			cajaAdulto.add(new JLabel(" " + String.valueOf(grada.getPrecioAdulto()) + " €" ));
 			panelGradas.add(cajaAdulto);
 			cantidades.put(new Entrada(grada.getEvento(), 0, grada.getId_grada(), "Adulto", grada.getPrecioAdulto(), grada.getNombre()), cantidadAdulto);
 
@@ -679,7 +682,7 @@ public class VentanaSINF extends JFrame {
 			for (int i = 0; i <= grada.getMaxInfantil(); i++) {
 				cantidadInfantil.addItem(i);
 			}
-			cajaInfantil.add(new JLabel(" " + String.valueOf(grada.getPrecioInfantil())));
+			cajaInfantil.add(new JLabel(" " + String.valueOf(grada.getPrecioInfantil()) + " €"));
 			panelGradas.add(cajaInfantil);
 			cantidades.put(new Entrada(grada.getEvento(), 0, grada.getId_grada(), "Infantil", grada.getPrecioInfantil(), grada.getNombre()), cantidadInfantil);
 
@@ -689,7 +692,7 @@ public class VentanaSINF extends JFrame {
 			for (int i = 0; i <= grada.getMaxJubilado(); i++) {
 				cantidadJubilado.addItem(i);
 			}
-			cajaJubilado.add(new JLabel(" " + String.valueOf(grada.getPrecioJubilado())));
+			cajaJubilado.add(new JLabel(" " + String.valueOf(grada.getPrecioJubilado()) + " €"));
 			panelGradas.add(cajaJubilado);
 			cantidades.put(new Entrada(grada.getEvento(), 0, grada.getId_grada(), "Jubilado", grada.getPrecioJubilado(), grada.getNombre()), cantidadJubilado);
 
@@ -699,7 +702,7 @@ public class VentanaSINF extends JFrame {
 			for (int i = 0; i <= grada.getMaxParado(); i++) {
 				cantidadParado.addItem(i);
 			}
-			cajaParado.add(new JLabel(" " + String.valueOf(grada.getPrecioParado())));
+			cajaParado.add(new JLabel(" " + String.valueOf(grada.getPrecioParado()) + " €"));
 			panelGradas.add(cajaParado);
 			cantidades.put(new Entrada(grada.getEvento(), 0, grada.getId_grada(), "Parado", grada.getPrecioParado(), grada.getNombre()), cantidadParado);
 
@@ -709,7 +712,7 @@ public class VentanaSINF extends JFrame {
 			for (int i = 0; i <= grada.getMaxBebe(); i++) {
 				cantidadBebe.addItem(i);
 			}
-			cajaBebe.add(new JLabel(" " + String.valueOf(grada.getPrecioBebe())));
+			cajaBebe.add(new JLabel(" " + String.valueOf(grada.getPrecioBebe()) + " €"));
 			panelGradas.add(cajaBebe);
 			cantidades.put(new Entrada(grada.getEvento(), 0, grada.getId_grada(), "Bebe", grada.getPrecioBebe(), grada.getNombre()), cantidadBebe);
 		}
@@ -974,6 +977,6 @@ public class VentanaSINF extends JFrame {
 		int anho = fechahora.getYear();
 		int hora = fechahora.getHour();
 		int min = fechahora.getMinute();
-		return (dia + "-" + mes + "-" + String.valueOf(anho).substring(2) + " " + hora + ":" + min + ":00");
+		return (anho + "-" + mes + "-" + dia + " " + hora + ":" + min + ":00");
 	}
 }
