@@ -371,7 +371,7 @@ public class VentanaSINF extends JFrame {
 		array = Aplicacion.obtenerRecintos();
 		recintos.addItem(" - Recintos - ");
 		for (String string : array) {
-			espectaculos.addItem(string);			
+			recintos.addItem(string);			
 		}
 		
 	}
@@ -860,6 +860,7 @@ public class VentanaSINF extends JFrame {
 					String fechanac = fechaNac2String(obtenerFechaHora(fechavox, null));
 					resultado = Aplicacion.modificarCliente(DNI, nombre, iban, fechanac);
 				} catch (NullPointerException e) {
+					System.out.println(cliente.getFecha_nacimiento());
 					resultado = Aplicacion.modificarCliente(DNI, nombre, iban, cliente.getFecha_nacimiento());
 				}
 				switch (resultado) {
