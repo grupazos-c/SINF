@@ -1061,23 +1061,45 @@ BEGIN
 
     drop table if exists resultado;
     drop table if exists aux;
+    
+		CREATE TEMPORARY TABLE resultado select * from Eventos;
+		CREATE TEMPORARY TABLE aux select * from Eventos where 1=0;
 
 	/*Primero filtramos por los tipos de usuarios que nos han mandado como TRUE*/
-	if jubilado=false and adulto=false and parado=false and infantil=false and bebe=false then
-		CREATE TEMPORARY TABLE resultado select Eventos.* from Eventos where estado_evento = 'abierto';
-	else
-		CREATE TEMPORARY TABLE resultado select Eventos.* from Eventos, Gradas
-		where Eventos.id_espectaculo = Gradas.id_espectaculo and Eventos.id_recinto = Gradas.id_recinto and Eventos.fecha = Gradas.fecha and estado_evento = 'abierto'
-        and 0 < if(jubilado = true	, Gradas.maximo_jubilado	, 1)
-        and 0 < if(adulto 	= true	, Gradas.maximo_adulto		, 1)
-        and 0 < if(parado 	= true	, Gradas.maximo_parado		, 1)
-        and 0 < if(infantil = true	, Gradas.maximo_infantil	, 1)
-        and 0 < if(bebe 	= true	, Gradas.maximo_bebe		, 1)
-        group by Eventos.id_espectaculo, Eventos.id_recinto, Eventos.fecha;
+	if jubilado=true or adulto=true or parado=true or infantil=true or bebe=true then
+		IF (jubilado) THEN
+			INSERT INTO aux select resultado.* from resultado,
+				(SELECT Gradas.id_espectaculo, Gradas.id_recinto, Gradas.fecha from Gradas WHERE Gradas.maximo_jubilado != 0 GROUP BY Gradas.id_espectaculo, Gradas.id_recinto, Gradas.fecha) as h
+			where resultado.id_espectaculo = h.id_espectaculo and resultado.id_recinto =  h.id_recinto and resultado.fecha =  h.fecha;
+            truncate resultado; insert into resultado select * from aux; truncate aux;
+        END IF;
+         IF (adulto) THEN
+			INSERT INTO aux select resultado.* from resultado,
+				(SELECT Gradas.id_espectaculo, Gradas.id_recinto, Gradas.fecha from Gradas WHERE Gradas.maximo_adulto != 0 GROUP BY Gradas.id_espectaculo, Gradas.id_recinto, Gradas.fecha) as h
+			where resultado.id_espectaculo = h.id_espectaculo and resultado.id_recinto =  h.id_recinto and resultado.fecha =  h.fecha;
+            truncate resultado; insert into resultado select * from aux; truncate aux;
+        END IF;
+         IF (parado) THEN
+			INSERT INTO aux select resultado.* from resultado,
+				(SELECT Gradas.id_espectaculo, Gradas.id_recinto, Gradas.fecha from Gradas WHERE Gradas.maximo_parado != 0 GROUP BY Gradas.id_espectaculo, Gradas.id_recinto, Gradas.fecha) as h
+			where resultado.id_espectaculo = h.id_espectaculo and resultado.id_recinto =  h.id_recinto and resultado.fecha =  h.fecha;
+            truncate resultado; insert into resultado select * from aux; truncate aux;
+        END IF;
+         IF (infantil) THEN
+			INSERT INTO aux select resultado.* from resultado,
+				(SELECT Gradas.id_espectaculo, Gradas.id_recinto, Gradas.fecha from Gradas WHERE Gradas.maximo_infantil != 0 GROUP BY Gradas.id_espectaculo, Gradas.id_recinto, Gradas.fecha) as h
+			where resultado.id_espectaculo = h.id_espectaculo and resultado.id_recinto =  h.id_recinto and resultado.fecha =  h.fecha;
+            truncate resultado; insert into resultado select * from aux; truncate aux;
+        END IF;
+        IF (bebe) THEN
+			INSERT INTO aux select resultado.* from resultado,
+				(SELECT Gradas.id_espectaculo, Gradas.id_recinto, Gradas.fecha from Gradas WHERE Gradas.maximo_bebe != 0 GROUP BY Gradas.id_espectaculo, Gradas.id_recinto, Gradas.fecha) as h
+			where resultado.id_espectaculo = h.id_espectaculo and resultado.id_recinto =  h.id_recinto and resultado.fecha =  h.fecha;
+            truncate resultado; insert into resultado select * from aux; truncate aux;
+        END IF;
 	end if;
+    
 	/**********************************************************************************************************************************************************/
-
-    CREATE TEMPORARY TABLE aux select * from Eventos where 1=0;
 
 	if filtro_espectaculo is not null then
 		insert into aux select resultado.* from resultado, Espectaculos where resultado.id_espectaculo = Espectaculos.id_espectaculo and Espectaculos.nombre_espectaculo = filtro_espectaculo;
@@ -1106,17 +1128,12 @@ BEGIN
 		truncate resultado; insert into resultado select * from aux; truncate aux;
     end if;
 
-	if filtro_precio_max != 0 then
-		insert into aux select resultado.id_espectaculo, resultado.id_recinto, resultado.fecha from resultado, Gradas
-			where resultado.id_espectaculo = Gradas.id_espectaculo AND resultado.id_recinto = Gradas.id_recinto AND resultado.fecha = Gradas.fecha
-				and filtro_precio_max <= if(jubilado = true	, Gradas.precio_jubilado	, filtro_precio_max)
-				and filtro_precio_max <= if(adulto 	 = true	, Gradas.precio_adulto		, filtro_precio_max)
-				and filtro_precio_max <= if(parado 	 = true	, Gradas.precio_parado		, filtro_precio_max)
-				and filtro_precio_max <= if(infantil = true	, Gradas.precio_infantil	, filtro_precio_max)
-				and filtro_precio_max <= if(bebe 	 = true	, Gradas.precio_bebe		, filtro_precio_max)
-				group by resultado.id_espectaculo, resultado.id_recinto, resultado.fecha;
-		truncate resultado; insert into resultado select * from aux; DROP TABLE aux;
-    end if;
+	if filtro_precio_max > 0 then
+		insert into aux select resultado.* from resultado, Gradas
+			where Gradas.id_espectaculo = resultado.id_espectaculo and Gradas.id_recinto = resultado.id_recinto and Gradas.fecha = resultado.fecha and Gradas.precio_adulto < filtro_precio_max
+            group by resultado.id_espectaculo, resultado.id_recinto, resultado.fecha;
+		truncate resultado; insert into resultado select * from aux; truncate aux;
+	end if;
 
 	select resultado.id_espectaculo, Espectaculos.nombre_espectaculo, resultado.id_recinto, Recintos.nombre_recinto, resultado.fecha
 		from resultado, Espectaculos, Recintos where resultado.id_espectaculo = Espectaculos.id_espectaculo and resultado.id_recinto = Recintos.id_recinto;
