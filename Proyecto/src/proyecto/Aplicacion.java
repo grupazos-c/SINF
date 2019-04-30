@@ -1,8 +1,11 @@
 package proyecto;
 
+import java.io.ObjectInputStream.GetField;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 public class Aplicacion {
@@ -15,6 +18,13 @@ public class Aplicacion {
 
 	private static Connection conn = null;
 	private static Statement stmt = null;
+
+	public static void main(String[] args) {
+		Integer[] a = { 1, 2, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+		List<Integer> aa = Arrays.asList(a);
+		ArrayList<Integer> aaa = new ArrayList<Integer>(aa);
+		maxConsecutivos(aaa);
+	}
 
 	/**
 	 * Inicio de la conexión con la BD SQL
@@ -87,35 +97,52 @@ public class Aplicacion {
 			return -87;
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param entradas
-	 * @return
-	 * -9: No se pueden conseguir entradas consecutivas
+	 * @return -9: No se pueden conseguir entradas consecutivas
 	 * 
 	 */
-	public static int reservarPreReservar(String tipoTransaccion, String dni,HashMap<Entrada, Integer> entradas) {
-		
+	public static int reservarPreReservar(String tipoTransaccion, String dni, HashMap<Entrada, Integer> entradas) {
+		System.out.println(entradas.toString());
 		try {
 			init();
 			conn.setAutoCommit(false);
 			conn.commit();
-			
+
 			Set<Entrada> set = entradas.keySet();
-			
+			int siguientelocalidad = 0;
+
 			for (Entrada entrada : set) {
 				int cantidad = entradas.get(entrada);
-				ArrayList<Integer> localidades = localidadesLibres(entrada.getId_espectaculo(), entrada.getId_recinto(), entrada.getFecha(), entrada.getId_grada());
+				if (cantidad == 0) {
+					continue;
+				}
+				ArrayList<Integer> localidades = localidadesLibres(entrada.getId_espectaculo(), entrada.getId_recinto(),
+						entrada.getFecha(), entrada.getId_grada());
 				int maximoSec[] = maxConsecutivos(localidades);
-				if(maximoSec[0] < cantidad) {
+				System.out.println("Cantidad de entradas deseada: " + cantidad + "\n Localidades disponibles: "
+						+ localidades + "\n maximos consecutivos" + maximoSec[0] + ", " + maximoSec[1]);
+				if (maximoSec[0] < cantidad) {
 					conn.rollback();
 					close();
 					return -9;
 				}
 				for (int i = 0; i < cantidad; i++) {
-					int resultado = reservarPreReservar(tipoTransaccion, dni, entrada.getTipoUsuario(), (maximoSec[1] + i), entrada.getId_grada(), entrada.getId_recinto(), entrada.getId_espectaculo(), entrada.getFecha());
-					if(resultado != 0) {
+					if(siguientelocalidad == 0) {
+						siguientelocalidad = localidades.get(maximoSec[1] + i);
+					}else {
+						siguientelocalidad++;
+					}
+					System.out.println("reservando: (" + tipoTransaccion + "," + dni + "," + entrada.getTipoUsuario()
+							+ "," + siguientelocalidad + "," + entrada.getId_grada() + ","
+							+ entrada.getId_recinto() + "," + entrada.getId_espectaculo() + "," + entrada.getFecha()
+							+ ")");
+					int resultado = reservarPreReservar(tipoTransaccion, dni, entrada.getTipoUsuario(),
+							siguientelocalidad, entrada.getId_grada(), entrada.getId_recinto(),
+							entrada.getId_espectaculo(), entrada.getFecha());
+					if (resultado != 1) {
 						conn.rollback();
 						close();
 						return resultado;
@@ -126,6 +153,40 @@ public class Aplicacion {
 			close();
 		} catch (SQLException e) {
 			try {
+				e.printStackTrace();
+				conn.rollback();
+				conn.setAutoCommit(true);
+				close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		return 0;
+	}
+
+	public static int reservarPreReservar(String tipoTransaccion, String dni, Entrada entrada) {
+		System.out.println(entrada.toString());
+		try {
+			init();
+			conn.setAutoCommit(false);
+			conn.commit();
+
+			System.out.println("reservando: (" + tipoTransaccion + "," + dni + "," + entrada.getTipoUsuario() + ","
+					+ entrada.getId_localidad() + "," + entrada.getId_grada() + "," + entrada.getId_recinto()
+					+ "," + entrada.getId_espectaculo() + "," + entrada.getFecha() + ")");
+			int resultado = reservarPreReservar(tipoTransaccion, dni, entrada.getTipoUsuario(), entrada.getId_localidad(),
+					entrada.getId_grada(), entrada.getId_recinto(), entrada.getId_espectaculo(), entrada.getFecha());
+			if (resultado != 1) {
+				conn.rollback();
+				close();
+				return resultado;
+			}
+
+			conn.commit();
+			close();
+		} catch (SQLException e) {
+			try {
+				e.printStackTrace();
 				conn.rollback();
 				conn.setAutoCommit(true);
 				close();
@@ -151,10 +212,8 @@ public class Aplicacion {
 			int id_grada, int id_recinto, int id_espectaculo, String fecha) throws SQLException {
 		if (dni.length() != 9) {
 			return -7;
-		} else if (fecha.length() != 26) {
-			return -8;
 		}
-		String SQLProcedure = "{call estado_localidad(?,?,?,?,?,?,?,?,?)}";
+		String SQLProcedure = "{call reservar_pre_reservar(?,?,?,?,?,?,?,?,?)}";
 		CallableStatement cstmt = conn.prepareCall(SQLProcedure);
 		cstmt.setString(1, tipoTransaccion);
 		cstmt.setString(2, dni);
@@ -175,6 +234,7 @@ public class Aplicacion {
 
 	/**
 	 * Lista de id_localidad libres
+	 * 
 	 * @param id_espectaculo
 	 * @param id_recinto
 	 * @param fecha
@@ -185,7 +245,7 @@ public class Aplicacion {
 	public static ArrayList<Integer> localidadesLibres(int id_espectaculo, int id_recinto, String fecha, int id_grada)
 			throws SQLException {
 		ArrayList<Integer> resultado = new ArrayList<>();
-		String SQLProcedure = "{call info_localidades(?,?,?,?)}"; // TODO
+		String SQLProcedure = "{call infoLocalidades(?,?,?,?)}";
 		CallableStatement cstmt = conn.prepareCall(SQLProcedure);
 		cstmt.setInt(1, id_espectaculo);
 		cstmt.setInt(2, id_recinto);
@@ -202,6 +262,7 @@ public class Aplicacion {
 
 	/**
 	 * Devuelve el mayor numero de de numeros secuanciales del array
+	 * 
 	 * @param numeros
 	 * @return
 	 */
@@ -210,19 +271,26 @@ public class Aplicacion {
 		int count = 1;
 		int empieza = 0;
 		numeros.sort(null);
-		
-		for (int i = 0; i < numeros.size()-1; i++) {
-			if (numeros.get(i) == (numeros.get(i+1)-1)) {
+//		numeros.add(0);
+		System.out.println("Foc" + numeros + "fococo" + numeros.size());
+
+		for (int i = 0; i < numeros.size() - 1; i++) {
+			if (numeros.get(i) == (numeros.get(i + 1) - 1)) {
 				count++;
 			} else {
-				if(count>maximo) {
+				if (count > maximo) {
 					maximo = count;
 					empieza = i - (maximo - 1);
 				}
 				count = 1;
 			}
 		}
-		int[] resultado = { maximo , empieza };
+		if (count > maximo) {
+			maximo = count;
+			empieza = (numeros.size() - 1) - (maximo - 1);
+		}
+		int[] resultado = { maximo, empieza };
+		System.out.println("Maximo: " + maximo + " en: " + empieza);
 		return resultado;
 
 	}
@@ -307,22 +375,24 @@ public class Aplicacion {
 	 * @param bebe
 	 * @param infantil
 	 */
-	public static ArrayList<Evento> filtrarEventos(String espectaculo, String recinto, String fechamax, String fechamin ,
+	public static ArrayList<Evento> filtrarEventos(String espectaculo, String recinto, String fechamax, String fechamin,
 			String participante, int precio_max, boolean jubilado, boolean adulto, boolean parado, boolean bebe,
 			boolean infantil) {
 		ArrayList<Evento> eventos = new ArrayList<Evento>();
 		try {
 			init();
 
-			System.out.println("Linea: (" + espectaculo + "," + recinto + ","+ fechamin + ","+ fechamax + ","+ participante + ","+ precio_max + ","+ jubilado + ","+ adulto + ","+ parado + ","+ infantil + ","+ bebe + ")");
-			
+			System.out.println("Linea: (" + espectaculo + "," + recinto + "," + fechamin + "," + fechamax + ","
+					+ participante + "," + precio_max + "," + jubilado + "," + adulto + "," + parado + "," + infantil
+					+ "," + bebe + ")");
+
 			String SQLProcedure = "{call filtrarEventos(?,?,?,?,?,?,?,?,?,?,?)}";
 			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
 			if (espectaculo.equals(" - Espectáculos - ")) {
-				cstmt.setString(1, null);		
+				cstmt.setString(1, null);
 				System.out.println("Espect a null");
 			} else {
-				cstmt.setString(1, espectaculo);				
+				cstmt.setString(1, espectaculo);
 			}
 
 			if (recinto.equals(" - Recintos - ")) {
@@ -357,34 +427,9 @@ public class Aplicacion {
 
 			close();
 			return eventos;
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace();
 			return eventos;
-//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo increible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo algo incereible", 1, "En un museo", "15-05-19 17:00:00"));
-//			eventos.add(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"));
-//			return eventos; // TODO borrar prueba
 		}
 	}
 
@@ -394,7 +439,8 @@ public class Aplicacion {
 		try {
 			init();
 
-			System.out.println("Llamada (" + evento.getId_espectaculo() + "," + evento.getId_recinto() + "," + evento.getFecha() + ")");
+			System.out.println("Llamada (" + evento.getId_espectaculo() + "," + evento.getId_recinto() + ","
+					+ evento.getFecha() + ")");
 			String SQLProcedure = "{call mostrarGradas(?,?,?)}"; // Primero bucamos cuantas gradas iteraremos
 			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
 			cstmt.setInt(1, evento.getId_espectaculo());
@@ -409,7 +455,8 @@ public class Aplicacion {
 			}
 
 			for (Integer integer : id_gradas) {
-				System.out.println("Llamada: (" + evento.getId_espectaculo() + "," +  evento.getId_recinto() + "," + evento.getFecha() + "," +  integer + ")");
+				System.out.println("Llamada: (" + evento.getId_espectaculo() + "," + evento.getId_recinto() + ","
+						+ evento.getFecha() + "," + integer + ")");
 				SQLProcedure = "{call infoGrada(?,?,?,?)}"; // Ahora llamaos al info una vez por grada GG
 				CallableStatement cstmt2 = conn.prepareCall(SQLProcedure);
 				cstmt2.setInt(1, evento.getId_espectaculo());
@@ -432,37 +479,8 @@ public class Aplicacion {
 			close();
 			System.out.println(gradas);
 			return gradas;
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace();
-			//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
-//			gradas.add(new Grada(evento, "Grada guay", 1, 10, 10, 5, 5, 0, 20, 10, 15, 10, 0));
 			return gradas;
 		}
 	}
@@ -484,10 +502,9 @@ public class Aplicacion {
 
 			close();
 			return cliente;
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace();
-				return null; 
-//			return new Cliente(dni, "joaquin", "1998-03-15", "12345678901234567890123456");
+			return null;
 		}
 
 	}
@@ -543,32 +560,22 @@ public class Aplicacion {
 				Evento evento = new Evento(rs.getInt("id_espectaculo"), rs.getString("nombre_espectaculo"),
 						rs.getInt("id_recinto"), rs.getString("nombre_recinto"), rs.getString("fecha"));
 				Entrada entrada = new Entrada(evento, rs.getInt("id_localidad"), rs.getInt("id_grada"),
-						rs.getString("tipo_usuario"), rs.getInt("precio"), rs.getString("nombre_grada"));
+						rs.getString("tipo_usuario"), rs.getInt("precio"), rs.getString("nombre_grada"),
+						rs.getString("estado_localidad").equals("pre-reservado"));
 				entradas.add(entrada);
 			}
 			close();
 			return entradas;
 		} catch (SQLException e) {
 			e.printStackTrace();
-////				TODO
-//			entradas.add(new Entrada(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"), 12,
-//					1, "Adulto", 7, "Tribuna pobre"));
-//			entradas.add(new Entrada(new Evento(1, "Espectaculo bueno", 1, "En un museo", "15-05-19 17:00:00"), 12, 1,
-//					"Adulto", 100, "Tribuna"));
-//			entradas.add(new Entrada(new Evento(1, "Espectaculo normalillo", 1, "En un museo", "15-05-19 17:00:00"), 12,
-//					1, "Adulto", 25, "Tribuna normalilla"));
-//			entradas.add(new Entrada(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"), 12,
-//					1, "Adulto", 25, "Tribuna pobre"));
-//			entradas.add(new Entrada(new Evento(1, "Espectaculo malisimo", 1, "En un museo", "15-05-19 17:00:00"), 12,
-//					1, "Adulto", 25, "Tribuna pobre"));
 			return entradas;
 		}
 	}
 
 	public static int obtenerMaximoPreReservas(Evento evento) {
 		try {
-            init();
-            String SQLProcedure = "{call obtenerMaximoPrereservas(?,?,?,?)}";
+			init();
+			String SQLProcedure = "{call obtenerMaximoPrereservas(?,?,?,?)}";
 			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
 			cstmt.setInt(1, evento.getId_espectaculo());
 			cstmt.setInt(2, evento.getId_recinto());
@@ -578,59 +585,59 @@ public class Aplicacion {
 
 			int resultado = cstmt.getInt(4);
 			return resultado;
-			
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
 	}
-	
+
 	public static ArrayList<String> obtenerParticipantes() {
-        ArrayList<String> participantes = new ArrayList<String>();
-        try {
-            init();
-            String SQLProcedure = "{call mostrarParticipantes()}";
-            CallableStatement cstmt = conn.prepareCall(SQLProcedure);
-            ResultSet rs = cstmt.executeQuery();
-            while (rs.next())
-                participantes.add(rs.getString("participante"));
-            return participantes;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return participantes;
-        }
-    }
+		ArrayList<String> participantes = new ArrayList<String>();
+		try {
+			init();
+			String SQLProcedure = "{call mostrarParticipantes()}";
+			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
+			ResultSet rs = cstmt.executeQuery();
+			while (rs.next())
+				participantes.add(rs.getString("participante"));
+			return participantes;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return participantes;
+		}
+	}
 
-    public static ArrayList<String> obtenerRecintos() {
-        ArrayList<String> participantes = new ArrayList<String>();
-        try {
-            init();
-            String SQLProcedure = "{call mostrarRecintos()}";
-            CallableStatement cstmt = conn.prepareCall(SQLProcedure);
-            ResultSet rs = cstmt.executeQuery();
-            while (rs.next())
-                participantes.add(rs.getString("nombre_recinto"));
-            return participantes;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return participantes;
-        }
-    }
+	public static ArrayList<String> obtenerRecintos() {
+		ArrayList<String> participantes = new ArrayList<String>();
+		try {
+			init();
+			String SQLProcedure = "{call mostrarRecintos()}";
+			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
+			ResultSet rs = cstmt.executeQuery();
+			while (rs.next())
+				participantes.add(rs.getString("nombre_recinto"));
+			return participantes;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return participantes;
+		}
+	}
 
-    public static ArrayList<String> obtenerEspectaculos() {
-        ArrayList<String> participantes = new ArrayList<String>();
-        try {
-            init();
-            String SQLProcedure = "{call mostrarEspectaculos()}";
-            CallableStatement cstmt = conn.prepareCall(SQLProcedure);
-            ResultSet rs = cstmt.executeQuery();
-            while (rs.next())
-                participantes.add(rs.getString("nombre_espectaculo"));
-            return participantes;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return participantes;
-        }
-    }
+	public static ArrayList<String> obtenerEspectaculos() {
+		ArrayList<String> participantes = new ArrayList<String>();
+		try {
+			init();
+			String SQLProcedure = "{call mostrarEspectaculos()}";
+			CallableStatement cstmt = conn.prepareCall(SQLProcedure);
+			ResultSet rs = cstmt.executeQuery();
+			while (rs.next())
+				participantes.add(rs.getString("nombre_espectaculo"));
+			return participantes;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return participantes;
+		}
+	}
 
 }

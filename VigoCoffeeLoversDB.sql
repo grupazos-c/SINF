@@ -1288,7 +1288,7 @@ END //
 /******************************************************************************************************************************************************************/
 create procedure obtenerEntradasCompradasCliente(IN dni varchar(9))
 begin
-	select Espectaculos.nombre_espectaculo, Gradas.id_grada, Espectaculos.id_espectaculo, Recintos.id_recinto, Recintos.nombre_recinto, Gradas.fecha, Gradas.nombre_grada, Reservas_Prereservas.id_localidad, Reservas_Prereservas.tipo_usuario,
+	select Espectaculos.nombre_espectaculo, Gradas.id_grada, Espectaculos.id_espectaculo, Recintos.id_recinto, Recintos.nombre_recinto, Gradas.fecha, Gradas.nombre_grada, Reservas_Prereservas.id_localidad, Reservas_Prereservas.tipo_usuario, Localidades.estado_localidad,
 		case
 			when Reservas_Prereservas.tipo_usuario = 'jubilado' then Gradas.precio_jubilado
             when Reservas_Prereservas.tipo_usuario = 'adulto' then Gradas.precio_adulto
@@ -1296,13 +1296,19 @@ begin
             when Reservas_Prereservas.tipo_usuario = 'infantil' then Gradas.precio_infantil
             when Reservas_Prereservas.tipo_usuario = 'bebe' then Gradas.precio_bebe
 		end as precio
-	from Reservas_Prereservas, Gradas, Espectaculos, Recintos where Reservas_Prereservas.dni = dni
+	from Reservas_Prereservas, Gradas, Espectaculos, Recintos, Localidades where Reservas_Prereservas.dni = dni
+		and Localidades.id_espectaculo = Gradas.id_espectaculo 
 		and Espectaculos.id_espectaculo = Gradas.id_espectaculo 
 		and Espectaculos.id_espectaculo = Reservas_Prereservas.id_espectaculo
+        and Localidades.id_recinto = Gradas.id_recinto 
         and Recintos.id_recinto = Gradas.id_recinto 
         and Recintos.id_recinto = Reservas_Prereservas.id_recinto
+        and Localidades.fecha = Gradas.fecha
         and Reservas_Prereservas.fecha = Gradas.fecha
-        and Reservas_Prereservas.id_grada = Gradas.id_grada;
+        and Localidades.fecha = Gradas.fecha
+        and Reservas_Prereservas.id_grada = Gradas.id_grada
+        and Localidades.id_grada = Reservas_Prereservas.id_grada
+        and Localidades.id_localidad = Reservas_Prereservas.id_localidad;
 end //
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
@@ -1330,7 +1336,7 @@ end //
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
 /******************************************************************************************************************************************************************/
-CREATE PROCEDURE reservar_pre_reservar(IN tipo_transaccion VARCHAR (15),IN dni VARCHAR (9), IN tipo_usuario VARCHAR (15), IN id_localidad INT, IN id_grada INT, IN id_recinto INT, IN id_espectaculo INT, IN fecha DATETIME, OUT id_transaccion VARCHAR (5))
+CREATE PROCEDURE reservar_pre_reservar(IN tipo_transaccion VARCHAR (15),IN dni VARCHAR (9), IN tipo_usuario VARCHAR (15), IN id_localidad INT, IN id_grada INT, IN id_recinto INT, IN id_espectaculo INT, IN fecha DATETIME, OUT id_transaccion int)
 reservar:BEGIN
 /*tipo_transaccion es una variable que indica si la operacion es RESERVAR O PRE-RESERVAR*/
 /*Este procedimiento reservará una localidad dados unos parámetros de entrada y retornará valores negativos cuando hay un error*/
@@ -1359,15 +1365,15 @@ SELECT dni INTO comprobacion FROM Reservas_Prereservas WHERE Reservas_Prereserva
 IF estado = 'libre' /*la localidad está libre*/
   THEN
     /*UNA VEZ COMPROBAMOS QUE LA LOCALIDAD ESTÁ LIBRE COMPROBAMOS SI SE ADMITEN USUARIOS DEL tipo_usuario*/
-    IF tipo_usuario = 'jubilado'
+    IF tipo_usuario = 'Jubilado'
       THEN SELECT maximo_jubilado INTO max_tipo FROM Gradas WHERE Gradas.id_grada = id_grada AND Gradas.id_recinto= id_recinto AND Gradas.id_espectaculo= id_espectaculo AND Gradas.fecha= fecha;
-    ELSEIF tipo_usuario = 'adulto'
+    ELSEIF tipo_usuario = 'Adulto'
       THEN SELECT maximo_adulto INTO max_tipo FROM Gradas WHERE Gradas.id_grada = id_grada AND Gradas.id_recinto= id_recinto AND Gradas.id_espectaculo= id_espectaculo AND Gradas.fecha= fecha;
-    ELSEIF tipo_usuario = 'infaltil'
+    ELSEIF tipo_usuario = 'Infantil'
       THEN SELECT maximo_infantil INTO max_tipo FROM Gradas WHERE Gradas.id_grada = id_grada AND Gradas.id_recinto= id_recinto AND Gradas.id_espectaculo= id_espectaculo AND Gradas.fecha= fecha;
-    ELSEIF tipo_usuario = 'parado'
+    ELSEIF tipo_usuario = 'Parado'
       THEN SELECT maximo_parado INTO max_tipo FROM Gradas WHERE Gradas.id_grada = id_grada AND Gradas.id_recinto= id_recinto AND Gradas.id_espectaculo= id_espectaculo AND Gradas.fecha= fecha;
-    ELSEIF tipo_usuario = 'bebe'
+    ELSEIF tipo_usuario = 'Bebe'
       THEN SELECT maximo_bebe INTO max_tipo FROM Gradas WHERE Gradas.id_grada = id_grada AND Gradas.id_recinto= id_recinto AND Gradas.id_espectaculo= id_espectaculo AND Gradas.fecha= fecha;
     ELSE /*si no introduce los usuario que existen*/
       SET id_transaccion = -2;
@@ -1398,13 +1404,7 @@ IF estado = 'libre' /*la localidad está libre*/
 
     /*PROCEDEMOS A METER LOS DATOS EN Reservas_Prereservas y actualizar el estado de la localidad en Localidades*/
     UPDATE Localidades SET estado_localidad = tipo_transaccion WHERE Localidades.id_localidad= id_localidad AND Localidades.id_grada= id_grada AND Localidades.id_recinto= id_recinto AND Localidades.id_espectaculo= id_espectaculo AND Localidades.fecha= fecha;
-    INSERT INTO Reservas_Prereservas VALUES (id_localidad,id_grada,id_recinto,id_espectaculo,fecha,dni, NULL,tipo_usuario);
-
-    /*Añadimos el disparador periodico (evento) para eliminar la prereserva pasados los T1 minutos de tiempo de validez*/
-	IF tipo_transaccion = 'pre-reservado'
-    THEN CALL eventoPrereserva(id_espectaculo, id_recinto, fecha, id_grada, id_localidad, dni);
-    END IF;
-	/**********************************************************************************************************/
+    INSERT INTO Reservas_Prereservas VALUES (id_localidad,id_grada,id_espectaculo,id_recinto,fecha,dni, NULL,tipo_usuario);
 
     SET id_transaccion=1;
     LEAVE reservar;
@@ -1416,10 +1416,6 @@ ELSEIF estado='pre-reservado' AND comprobacion = dni AND tipo_transaccion = 'res
     UPDATE Localidades SET estado_localidad = 'reservado' WHERE Localidades.id_localidad= id_localidad AND Localidades.id_grada= id_grada AND Localidades.id_recinto= id_recinto AND Localidades.id_espectaculo= id_espectaculo AND Localidades.fecha= fecha;
 
 	/*Añadimos el disparador periodico (evento) para eliminar la prereserva pasados los T1 minutos de tiempo de validez*/
-	IF tipo_transaccion = 'pre-reservado'
-	THEN CALL eventoPrereserva(id_espectaculo, id_recinto, fecha, id_grada, id_localidad, dni);
-	END IF;
-	/**********************************************************************************************************/
 
     SET id_transaccion=1;
     LEAVE reservar;
