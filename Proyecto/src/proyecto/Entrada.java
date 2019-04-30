@@ -7,6 +7,7 @@ public class Entrada extends Evento {
 	private String tipoUsuario;
 	private String nombre_grada;
 	private int precio;
+	private boolean preReserva; //true si si lo es
 
 	/**
 	 * @param id_espectaculo
@@ -26,6 +27,25 @@ public class Entrada extends Evento {
 		this.tipoUsuario = tipoUsuario;
 		this.precio = precio;
 		this.nombre_grada = nombre_grada;
+	}
+	
+	public Entrada(Evento evento, int id_localidad, int id_grada, String tipoUsuario, int precio, String nombre_grada, boolean preReserva) {
+		super(evento.getId_espectaculo(), evento.getEspectaculo(), evento.getId_recinto(), evento.getRecinto(),
+				evento.getFecha());
+		this.id_localidad = id_localidad;
+		this.id_grada = id_grada;
+		this.tipoUsuario = tipoUsuario;
+		this.precio = precio;
+		this.nombre_grada = nombre_grada;
+		this.preReserva = preReserva;
+	}
+
+
+	/**
+	 * @return the preReserva
+	 */
+	public boolean isPreReserva() {
+		return preReserva;
 	}
 
 	/**
@@ -65,8 +85,11 @@ public class Entrada extends Evento {
 
 	@Override
 	public String toString() {
-
-		return (super.toString() + " ; " + nombre_grada + ", " + tipoUsuario + ", " + precio + "€");
+		if(preReserva) {
+			return (super.toString() + " ; " + nombre_grada + ", " + tipoUsuario + ", " + precio + "€ , Pre-Reserva");
+		} else {
+			return (super.toString() + " ; " + nombre_grada + ", " + tipoUsuario + ", " + precio + "€");
+		}
 	}
 
 }

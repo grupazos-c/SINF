@@ -20,7 +20,7 @@ public class Evento {
 		this.espectaculo = espectaculo;
 		this.id_recinto = id_recinto;
 		this.recinto = recinto;
-		this.fecha = fecha;
+		this.fecha = fecha.substring(0, 19);
 	}
 	
 	public Evento getEvento() {
